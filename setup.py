@@ -22,9 +22,9 @@ class get_pybind_include:
 
 ext_modules = [
     Extension(
-        'dltools',
+        'dltools.sacla.model',
         [
-            'dltools/src/binder.cpp',
+            'dltools/src/sacla_model_binder.cpp',
             'dltools/src/sacla_model_pickler.cpp',
             'dltools/src/sacla_model.cpp',
             'dltools/src/hittype.cpp',
@@ -103,6 +103,7 @@ setup(
     author='Daehyun You',
     author_email='daehyun@dc.tohoku.ac.jp',
     ext_modules=ext_modules,
+    packages=['dltools', 'dltools.sacla'],
     install_requires=['pybind11>=2.2'],
     cmdclass={'build_ext': BuildExt},
     zip_safe=False,
