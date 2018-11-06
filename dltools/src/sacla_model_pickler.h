@@ -2,13 +2,13 @@
 // Created by Daehyun You on 11/6/18.
 //
 
-#ifndef DLTOOLS_PICKLER_H
-#define DLTOOLS_PICKLER_H
+#ifndef DLTOOLS_SACLA_MODEL_PICKLER_H
+#define DLTOOLS_SACLA_MODEL_PICKLER_H
 
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "sacla_models.h"
+#include "sacla_model.h"
 
 
 namespace dltools { namespace sacla {
@@ -20,4 +20,4 @@ namespace dltools { namespace sacla {
 }}
 
 
-#endif //DLTOOLS_PICKLER_H
+#endif //DLTOOLS_SACLA_MODEL_PICKLER_H

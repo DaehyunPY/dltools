@@ -3,4 +3,4 @@ project(dltools)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_library(dltools STATIC sacla_models.cpp hit_types.cpp)
+add_library(dltools STATIC sacla_model.cpp hittype.cpp)

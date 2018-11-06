@@ -25,9 +25,9 @@ ext_modules = [
         'dltools',
         [
             'dltools/src/binder.cpp',
-            'dltools/src/pickler.cpp',
-            'dltools/src/sacla_models.cpp',
-            'dltools/src/hit_types.cpp',
+            'dltools/src/sacla_model_pickler.cpp',
+            'dltools/src/sacla_model.cpp',
+            'dltools/src/hittype.cpp',
         ],
         include_dirs=[
             # Path to pybind11 headers

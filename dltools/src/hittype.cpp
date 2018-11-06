@@ -3,7 +3,7 @@
 //
 
 #include <algorithm>
-#include "hit_types.h"
+#include "hittype.h"
 
 
 using std::to_string;

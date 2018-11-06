@@ -2,8 +2,8 @@
 // Created by Daehyun You on 11/5/18.
 //
 
-#ifndef DLTOOLS_HIT_TYPES_H
-#define DLTOOLS_HIT_TYPES_H
+#ifndef DLTOOLS_HITTYPE_H
+#define DLTOOLS_HITTYPE_H
 
 
 #include <math.h>
@@ -36,4 +36,4 @@ namespace dltools {
 }
 
 
-#endif //DLTOOLS_HIT_TYPES_H
+#endif //DLTOOLS_HITTYPE_H

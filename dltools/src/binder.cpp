@@ -4,9 +4,9 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "caster.h"
-#include "pickler.h"
-#include "sacla_models.h"
+#include "hittype_caster.h"
+#include "sacla_model_pickler.h"
+#include "sacla_model.h"
 
 
 using namespace pybind11::literals;

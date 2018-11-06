@@ -2,8 +2,8 @@
 // Created by Daehyun You on 11/4/18.
 //
 
-#ifndef DLTOOLS_SACLA_MODELS_H
-#define DLTOOLS_SACLA_MODELS_H
+#ifndef DLTOOLS_SACLA_MODEL_H
+#define DLTOOLS_SACLA_MODEL_H
 
 
 #include <math.h>
@@ -12,7 +12,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
-#include "hit_types.h"
+#include "hittype.h"
 
 
 // TODO Implict unit conversion
@@ -172,4 +172,4 @@ namespace dltools { namespace sacla {
 }}
 
 
-#endif //DLTOOLS_SACLA_MODELS_H
+#endif //DLTOOLS_SACLA_MODEL_H

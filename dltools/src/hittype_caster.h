@@ -2,11 +2,11 @@
 // Created by Daehyun You on 11/5/18.
 //
 
-#ifndef DLTOOLS_CASTER_H
-#define DLTOOLS_CASTER_H
+#ifndef DLTOOLS_HITTYPE_CASTER_H
+#define DLTOOLS_HITTYPE_CASTER_H
 
 
-#include "hit_types.h"
+#include "hittype.h"
 
 
 namespace pybind11 { namespace detail {
@@ -196,4 +196,4 @@ namespace pybind11 { namespace detail {
 }}
 
 
-#endif //DLTOOLS_CASTER_H
+#endif //DLTOOLS_HITTYPE_CASTER_H
