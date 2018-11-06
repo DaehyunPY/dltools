@@ -5,6 +5,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include "caster.h"
+#include "pickler.h"
 #include "sacla_models.h"
 
 
@@ -28,7 +29,11 @@ PYBIND11_MODULE(dltools, m) {
                         :param y1: A calibration factor in atomic units.
                     )pbdoc",
                     "mass"_a, "pz_coeffs"_a, "pr_coeffs"_a, "fr"_a = 0, "to"_a = INFINITY, "x1"_a = 0, "y1"_a = 0
-            );
+            )
+            .def(py::pickle(
+                    &dltools::sacla::_model__getstate__,
+                    &dltools::sacla::_model__setstate__
+            ))
 // TODO Fix me!
 //            .def(
 //                    "__call__",
@@ -41,7 +46,8 @@ PYBIND11_MODULE(dltools, m) {
 //                        the pointer will have a value, if not, it will be nullptr.
 //                    )pbdoc",
 //                    "hit"_a
-//            );
+//            )
+            ;
 
     py::class_<dltools::sacla::Models>(m, "Models", "SACLA momentum models.")
             .def(
@@ -59,6 +65,10 @@ PYBIND11_MODULE(dltools, m) {
                     )pbdoc",
                     "models"_a, "t0"_a = 0, "th"_a = 0, "x0"_a = 0, "y0"_a = 0, "dx"_a = 1, "dy"_a = 1
             )
+            .def(py::pickle(
+                    &dltools::sacla::_models__getstate__,
+                    &dltools::sacla::_models__setstate__
+            ))
             .def(
                     "__call__",
                     py::overload_cast<const dltools::Hit &>
@@ -84,5 +94,6 @@ PYBIND11_MODULE(dltools, m) {
                         :return: Calibrated Hits with maps to momentum and kinetic energy.
                     )pbdoc",
                     "hit"_a
-            );
+            )
+            ;
 }

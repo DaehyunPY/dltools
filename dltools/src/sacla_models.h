@@ -69,6 +69,34 @@ namespace dltools { namespace sacla {
         std::shared_ptr<AnalyzedHit> operator()(const Hit &hit) const;
 
         explicit operator std::string() const;
+
+        inline double _mass() const {
+            return __mass;
+        }
+
+        inline double _fr() const {
+            return __fr;
+        }
+
+        inline double _to() const {
+            return __to;
+        }
+
+        inline double _x1() const {
+            return __x1;
+        }
+
+        inline double _y1() const {
+            return __y1;
+        }
+
+        inline std::array<double, 7> _pz_coeffs() const {
+            return __pz_coeffs;
+        }
+
+        inline std::array<double, 6> _pr_coeffs() const {
+            return __pr_coeffs;
+        }
     };
 
 
@@ -112,6 +140,34 @@ namespace dltools { namespace sacla {
         std::vector<Hit> operator()(const std::vector<Hit> &hits) const;
 
         explicit operator std::string() const;
+
+        inline const std::unordered_map<std::string, Model> &_models() const {
+            return __models;
+        }
+
+        inline double _t0() const {
+            return __t0;
+        }
+
+        inline double _th() const {
+            return __th;
+        }
+
+        inline double _x0() const {
+            return __x0;
+        }
+
+        inline double _y0() const {
+            return __y0;
+        }
+
+        inline double _dx() const {
+            return __dx;
+        }
+
+        inline double _dy() const {
+            return __dy;
+        }
     };
 }}
 

@@ -25,6 +25,7 @@ ext_modules = [
         'dltools',
         [
             'dltools/src/binder.cpp',
+            'dltools/src/pickler.cpp',
             'dltools/src/sacla_models.cpp',
             'dltools/src/hit_types.cpp',
         ],
