@@ -1,0 +1,48 @@
+# Target resored root (*SortEvent*.root) files.
+target_files:
+  - <path/to/target1.root>
+  - <path/to/target2.root>
+
+# MongoDB collection where analyzed Hits will be saved.
+save_to: mongodb://<addr>/<db>.<collection>
+
+# Parameters of SACLA momentum models (momentum analyzer). Hit (t, x, y)
+# will be calibrated to...
+#   (t) -> (t - t0),
+#   (x, y) -> ((x, y) * rot(th) - (x0, y0)) * (dx, dy).
+momentum_analyzer:
+  t0: 0  # A calibration factor. Default: 0.
+  th: 0  # A calibration factor. Default: 0.
+  x0: 0  # A calibration factor. Default: 0.
+  y0: 0  # A calibration factor. Default: 0.
+  dx: 1  # A calibration factor. Default: 1.
+  dy: 1  # A calibration factor. Default: 1.
+  models:  # SACLA momentum models.
+    <particle>:
+      # Mass of the model particle. This parameter will be used to
+      # calculate kinetic energy from three-dimensional momentum...
+      #   (px, py, pz) -> (px**2 + py**2 + pz**2) / 2 / mass.
+      # This program does not consider units. You may want to
+      # convert the unit of kinetic energy implictly, here.
+      mass: 1
+      # Coefficients of momentum model in the z direction.
+      pz_coeffs:
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+      # Coefficients of momentum model in the r direction.
+      pr_coeffs:
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+        - 0
+      fr: 0  # Lower limit of flight time. Default: 0.
+      to: .inf  # Upper limit of flight time. Default: .inf.
+      x1: 0  # A calibration factor. Default: 0.
+      y1: 0  # A calibration factor. Default: 0.
