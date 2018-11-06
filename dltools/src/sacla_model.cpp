@@ -4,7 +4,6 @@
 
 #include <math.h>
 #include <algorithm>
-#include "units.h"
 #include "sacla_model.h"
 
 
@@ -16,21 +15,15 @@ using std::to_string;
 using std::unordered_map;
 using dltools::AnalyzedHit;
 using dltools::Hit;
-using dltools::units::to_milli_meter;
-using dltools::units::to_nano_sec;
 
 
 double dltools::sacla::_pz_model(double r, double t, const std::array<double, 7> &coeffs) {
-    r = to_milli_meter(r);
-    t = to_nano_sec(t);
     return coeffs[0] + coeffs[1] * t + coeffs[2] * pow(t, 2) + coeffs[3] * pow(t, 3) + coeffs[4] * pow(t, 4) +
            coeffs[5] * pow(r, 2) + coeffs[6] * pow(r, 4);
 }
 
 
 double dltools::sacla::_pr_model(double r, double t, const std::array<double, 6> &coeffs) {
-    r = to_milli_meter(r);
-    t = to_nano_sec(t);
     return coeffs[0] * r + coeffs[1] * r * t + coeffs[2] * pow(r, 3) * t + coeffs[3] * pow(r, 5) * t +
            coeffs[4] * pow(t, 3) + coeffs[5] * pow(t, 5);
 }
