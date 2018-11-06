@@ -7,6 +7,8 @@
 
 
 #include <math.h>
+#include <memory>
+#include <algorithm>
 #include <vector>
 #include <unordered_map>
 #include <string>
@@ -33,6 +35,16 @@ namespace dltools {
 
         explicit operator std::string() const;
     };
+
+
+    std::vector<Hit> zip_to_hits(std::vector<double> t,
+                                 std::vector<double> x,
+                                 std::vector<double> y);
+
+    std::vector<Hit> zip_to_hits(std::vector<double> t,
+                                 std::vector<double> x,
+                                 std::vector<double> y,
+                                 std::vector<int> flag);
 }
 
 

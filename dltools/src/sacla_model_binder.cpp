@@ -14,7 +14,6 @@ namespace py = pybind11;
 
 
 PYBIND11_MODULE(model, m) {
-    m.doc() = "Data analysis tools for delayline type spectroscopy.";
     m.attr("__all__") = std::vector<std::string>{"Model", "Models"};
     py::class_<dltools::sacla::Model>(m, "Model", "SACLA momentum model.")
             .def(

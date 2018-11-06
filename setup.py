@@ -36,6 +36,19 @@ ext_modules = [
         ],
         language='c++'
     ),
+    Extension(
+        'dltools.hittype',
+        [
+            'dltools/src/hittype_binder.cpp',
+            'dltools/src/hittype.cpp',
+        ],
+        include_dirs=[
+            # Path to pybind11 headers
+            get_pybind_include(),
+            get_pybind_include(user=True),
+        ],
+        language='c++'
+    ),
 ]
 
 
