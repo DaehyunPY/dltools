@@ -121,7 +121,7 @@ setup(
     license='MIT',
     ext_modules=ext_modules,
     packages=['dltools', 'dltools.sacla'],
-    install_requires=['pybind11>=2.2'],
+    install_requires=['pybind11>=2.2', 'pyspark'],
     cmdclass={'build_ext': BuildExt},
     zip_safe=False,
 )

@@ -1,2 +1,4 @@
 from .hittype import *
-from .sacla import Model as SaclaModel, Models as SaclaModels
+from .hittype_spark import *
+
+__all__ = []
