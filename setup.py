@@ -88,7 +88,7 @@ class BuildExt(build_ext):
 
 setup(
     name='dltools',
-    version='201811.1',
+    version='201811.2',
     author='Daehyun You',
     author_email='daehyun@dc.tohoku.ac.jp',
     url='https://github.com/DaehyunPY/dltools',
