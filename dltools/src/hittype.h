@@ -37,10 +37,12 @@ namespace dltools {
     };
 
 
+    // TODO Add document
     std::vector<Hit> zip_to_hits(std::vector<double> t,
                                  std::vector<double> x,
                                  std::vector<double> y);
 
+    // TODO Add document
     std::vector<Hit> zip_to_hits(std::vector<double> t,
                                  std::vector<double> x,
                                  std::vector<double> y,

@@ -34,19 +34,6 @@ PYBIND11_MODULE(model, m) {
                     &dltools::sacla::_model__getstate__,
                     &dltools::sacla::_model__setstate__
             ))
-// TODO Fix me!
-//            .def(
-//                    "__call__",
-//                    py::overload_cast<const dltools::Hit &>(&dltools::sacla::Model::operator(), py::const_),
-//                    R"pbdoc(
-//                        Analyze momentum of a Hit. Hit (t, x, y) will be calibrated to...
-//                          (x, y) -> (x, y) + (x1, y1).
-//                        :param hit: Hit to be analyzed.
-//                        :return: A pointer of momentum and kinetic energy. If the Hit is within the flight time limit,
-//                        the pointer will have a value, if not, it will be nullptr.
-//                    )pbdoc",
-//                    "hit"_a
-//            )
             ;
 
     py::class_<dltools::sacla::Models>(m, "Models", "SACLA momentum models.")
