@@ -18,11 +18,13 @@ PYBIND11_MODULE(hittype, m) {
           py::overload_cast<std::vector<double>,
                             std::vector<double>,
                             std::vector<double>>(&dltools::zip_to_hits),
-          "t"_a, "x"_a, "y"_a);
+          "t"_a, "x"_a, "y"_a,
+          py::call_guard<py::gil_scoped_release>());
     m.def("zip_to_hits",
           py::overload_cast<std::vector<double>,
                             std::vector<double>,
                             std::vector<double>,
                             std::vector<int>>(&dltools::zip_to_hits),
-          "t"_a, "x"_a, "y"_a, "flag"_a);
+          "t"_a, "x"_a, "y"_a, "flag"_a,
+          py::call_guard<py::gil_scoped_release>());
 }
