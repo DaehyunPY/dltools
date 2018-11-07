@@ -193,6 +193,67 @@ namespace pybind11 { namespace detail {
 
         PYBIND11_TYPE_CASTER(dltools::Hit, _("dltools.Hit"));
     };
+
+
+    template<> struct type_caster<dltools::CombinedHit> {
+        bool load(handle src, bool convert) {
+            if (not isinstance<dict>(src)) {
+                return false;
+            }
+            auto d = reinterpret_borrow<dict>(src);
+            {  // comb
+                make_caster<std::vector<dltools::Hit>> v;
+                if (not(d.contains("comb") and v.load(d["comb"].ptr(), convert))) {
+                    return false;
+                }
+                value.comb = cast_op<std::vector<dltools::Hit>>(v);
+            }
+            {  // as
+                if (d.contains("as")) {
+                    make_caster<std::unordered_map<std::string, dltools::AnalyzedHit>> v;
+                    if (not v.load(d["as"].ptr(), convert)) {
+                        return false;
+                    }
+                    value.as = cast_op<std::unordered_map<std::string, dltools::AnalyzedHit> &&>(std::move(v));
+                } else {
+                    value.as = {};
+                }
+            }
+            return true;
+        }
+
+        template <typename T>
+        static handle cast(T &&src, return_value_policy policy, handle parent) {
+            dict d;
+            {  // comb
+                return_value_policy p = return_value_policy_override<std::vector<dltools::Hit>>::policy(policy);
+                auto v = reinterpret_steal<object>(
+                        make_caster<std::vector<dltools::Hit>>
+                        ::cast(forward_like<T>(src.comb), p, parent)
+                );
+                if (not v) {
+                    return handle();
+                }
+                d["comb"] = v;
+            }
+            {  // as
+                return_value_policy p =
+                        return_value_policy_override<std::unordered_map<std::string, dltools::AnalyzedHit>>
+                        ::policy(policy);
+                auto v = reinterpret_steal<object>(
+                        make_caster<std::unordered_map<std::string, dltools::AnalyzedHit>>
+                        ::cast(forward_like<T>(src.as), p, parent)
+                );
+                if (not v) {
+                    return handle();
+                }
+                d["as"] = v;
+            }
+            return d.release();
+        }
+
+        PYBIND11_TYPE_CASTER(dltools::CombinedHit, _("dltools.CombinedHit"));
+    };
 }}
 
 

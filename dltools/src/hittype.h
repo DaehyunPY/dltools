@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <vector>
 #include <unordered_map>
+#include <unordered_set>
 #include <string>
 
 
@@ -20,6 +21,18 @@ namespace dltools {
      */
     struct AnalyzedHit {
         double pz, px, py, ke;
+
+        inline AnalyzedHit operator+(const AnalyzedHit &hit) {
+            return AnalyzedHit{.pz=pz+hit.pz, .px=px+hit.px, .py=py+hit.py, .ke=ke+hit.ke};
+        }
+
+        inline AnalyzedHit &operator+=(const AnalyzedHit &hit) {
+            pz += hit.pz;
+            px += hit.px;
+            py += hit.py;
+            ke += hit.ke;
+            return *this;
+        }
 
         explicit operator std::string() const;
     };
@@ -47,6 +60,21 @@ namespace dltools {
                                  std::vector<double> x,
                                  std::vector<double> y,
                                  std::vector<int> flag);
+
+
+    // TODO Add document
+    struct CombinedHit {
+        std::vector<Hit> comb;
+        std::unordered_map<std::string, AnalyzedHit> as;
+    };
+
+
+    // TODO Add document
+    std::vector<CombinedHit> combine(std::vector<Hit> hits, int r);
+
+    // TODO Add document
+    std::vector<CombinedHit> combine(std::vector<Hit> hits, int r,
+                                     std::unordered_set<std::string> white_list);
 }
 
 

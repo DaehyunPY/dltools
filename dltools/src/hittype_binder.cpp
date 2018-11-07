@@ -13,7 +13,7 @@ namespace py = pybind11;
 
 
 PYBIND11_MODULE(hittype, m) {
-    m.attr("__all__") = std::vector<std::string>{"zip_to_hits"};
+    m.attr("__all__") = std::vector<std::string>{"zip_to_hits", "combine"};
     m.def("zip_to_hits",
           py::overload_cast<std::vector<double>,
                             std::vector<double>,
@@ -26,5 +26,13 @@ PYBIND11_MODULE(hittype, m) {
                             std::vector<double>,
                             std::vector<int>>(&dltools::zip_to_hits),
           "t"_a, "x"_a, "y"_a, "flag"_a,
+          py::call_guard<py::gil_scoped_release>());
+    m.def("combine",
+          py::overload_cast<std::vector<dltools::Hit>, int>(&dltools::combine),
+          "hits"_a, "r"_a,
+          py::call_guard<py::gil_scoped_release>());
+    m.def("combine",
+          py::overload_cast<std::vector<dltools::Hit>, int, std::unordered_set<std::string>>(&dltools::combine),
+          "hits"_a, "r"_a, "white_list"_a,
           py::call_guard<py::gil_scoped_release>());
 }
