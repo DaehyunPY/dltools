@@ -2,8 +2,14 @@ from sys import platform
 from distutils.extension import Extension
 from setuptools import setup
 from Cython.Build import cythonize
-import numpy
-import pybind11
+try:
+    import numpy
+except ModuleNotFoundError:
+    numpy = None
+try:
+    import pybind11
+except ModuleNotFoundError:
+    pybind11 = None
 
 
 ext_modules = [
@@ -16,8 +22,10 @@ ext_modules = [
             'dltools/src/hittype.cpp',
         ],
         include_dirs=[
-            pybind11.get_include(),
-            pybind11.get_include(user=True),
+            *([pybind11.get_include(),
+               pybind11.get_include(user=True)]
+              if pybind11 else []),
+            'include',
         ],
         extra_compile_args=[
             "-std=c++14",
@@ -32,8 +40,10 @@ ext_modules = [
             'dltools/src/hittype.cpp',
         ],
         include_dirs=[
-            pybind11.get_include(),
-            pybind11.get_include(user=True),
+            *([pybind11.get_include(),
+               pybind11.get_include(user=True)]
+              if pybind11 else []),
+            'include',
         ],
         extra_compile_args=[
             "-std=c++14",
@@ -48,7 +58,9 @@ ext_modules = [
                 'dltools/lmafmt.pyx',
             ],
             include_dirs=[
-                numpy.get_include(),
+                *([numpy.get_include()]
+                  if numpy else []),
+                'include',
             ],
             language='c++',
         ),
