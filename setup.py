@@ -1,23 +1,7 @@
+from sys import platform
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext
-import sys
-import setuptools
-
-
-class get_pybind_include:
-    """
-    Helper class to determine the pybind11 include path.
-    The purpose of this class is to postpone importing pybind11
-    until it is actually installed, so that the ``get_include()``
-    method can be invoked.
-    """
-
-    def __init__(self, user=False):
-        self.user = user
-
-    def __str__(self):
-        import pybind11
-        return pybind11.get_include(self.user)
+from distutils.errors import CompileError
 
 
 ext_modules = [
@@ -29,11 +13,7 @@ ext_modules = [
             'dltools/src/sacla_model.cpp',
             'dltools/src/hittype.cpp',
         ],
-        include_dirs=[
-            # Path to pybind11 headers
-            get_pybind_include(),
-            get_pybind_include(user=True),
-        ],
+        include_dirs=['include'],
         language='c++'
     ),
     Extension(
@@ -42,11 +22,7 @@ ext_modules = [
             'dltools/src/hittype_binder.cpp',
             'dltools/src/hittype.cpp',
         ],
-        include_dirs=[
-            # Path to pybind11 headers
-            get_pybind_include(),
-            get_pybind_include(user=True),
-        ],
+        include_dirs=['include'],
         language='c++'
     ),
 ]
@@ -64,7 +40,7 @@ def has_flag(compiler, flagname):
         f.write('int main (int argc, char **argv) { return 0; }')
         try:
             compiler.compile([f.name], extra_postargs=[flagname])
-        except setuptools.distutils.errors.CompileError:
+        except CompileError:
             return False
     return True
 
@@ -92,7 +68,7 @@ class BuildExt(build_ext):
         'unix': [],
     }
 
-    if sys.platform == 'darwin':
+    if platform == 'darwin':
         c_opts['unix'] += ['-stdlib=libc++', '-mmacosx-version-min=10.7']
 
     def build_extensions(self):
@@ -112,7 +88,7 @@ class BuildExt(build_ext):
 
 setup(
     name='dltools',
-    version='201811.0',
+    version='201811.1',
     author='Daehyun You',
     author_email='daehyun@dc.tohoku.ac.jp',
     url='https://github.com/DaehyunPY/dltools',
@@ -121,7 +97,7 @@ setup(
     license='MIT',
     ext_modules=ext_modules,
     packages=['dltools', 'dltools.sacla'],
-    install_requires=['pybind11>=2.2', 'pyspark'],
+    install_requires=['pyspark'],
     cmdclass={'build_ext': BuildExt},
     zip_safe=False,
 )
