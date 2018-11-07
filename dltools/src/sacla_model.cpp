@@ -99,7 +99,7 @@ dltools::sacla::Models::operator std::string() const {
 std::vector<dltools::Hit> dltools::sacla::Models::operator()(const std::vector<dltools::Hit> &hits) const {
     auto ret = std::vector<Hit>{};
     for (const auto &h : hits) {
-        ret.push_back(move((*this)(h)));
+        ret.push_back((*this)(h));
     }
     return ret;
 }
