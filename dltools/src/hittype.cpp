@@ -57,7 +57,13 @@ std::vector<Hit> dltools::zip_to_hits(std::vector<double> t,
     auto iy = y.begin();
     auto iflag = flag.begin();
     for (; it != t.end() and ix != x.end() and iy != y.end() and iflag != flag.end(); ++it, ++ix, ++iy, ++iflag) {
-        ret.push_back(Hit{.t=*it, .x=*ix, .y=*iy, .flag=make_shared<int>(*iflag)});
+        ret.push_back(Hit{
+            .t=*it,
+            .x=*ix,
+            .y=*iy,
+            .as={},
+            .flag=make_shared<int>(*iflag)
+        });
     }
     return ret;
 }

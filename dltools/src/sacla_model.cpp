@@ -12,6 +12,7 @@ using std::shared_ptr;
 using std::make_shared;
 using std::string;
 using std::to_string;
+using std::pair;
 using std::unordered_map;
 using dltools::AnalyzedHit;
 using dltools::Hit;
@@ -32,8 +33,8 @@ double dltools::sacla::_pr_model(double r, double t, const std::array<double, 6>
 dltools::sacla::Model::Model(
         double mass, std::array<double, 7> pz_coeffs, std::array<double, 6> pr_coeffs,
         double fr, double to, double x1, double y1) :
-        __mass{mass}, __fr{fr}, __to{to}, __x1{x1}, __y1{y1},
-        __pz_coeffs{pz_coeffs}, __pr_coeffs{pr_coeffs} {
+        __mass(mass), __fr(fr), __to(to), __x1(x1), __y1(y1),
+        __pz_coeffs(pz_coeffs), __pr_coeffs(pr_coeffs) {
 }
 
 
@@ -62,8 +63,8 @@ dltools::sacla::Model::operator std::string() const {
 dltools::sacla::Models::Models(
         std::unordered_map<std::string, dltools::sacla::Model> models,
         double t0, double th, double x0, double y0, double dx, double dy) :
-        __t0{t0}, __th{th}, __x0{x0}, __y0{y0}, __dx{dx}, __dy{dy},
-        __models{move(models)} {
+        __t0(t0), __th(th), __x0(x0), __y0(y0), __dx(dx), __dy(dy),
+        __models(move(models)) {
 }
 
 
@@ -72,13 +73,14 @@ dltools::Hit dltools::sacla::Models::operator()(const dltools::Hit &hit) const {
             .t=hit.t - __t0,
             .x=__dx * (cos(__th) * hit.x - sin(__th) * hit.y - __x0),
             .y=__dy * (sin(__th) * hit.x + cos(__th) * hit.y - __y0),
+            .as={},
             .flag=hit.flag
     };
     unordered_map<string, AnalyzedHit> map;
     for (const auto &m : __models) {
         auto ptr = m.second(ret);
         if (ptr) {
-            map.insert({m.first, *ptr});
+            map.insert(pair<string, AnalyzedHit>(m.first, *ptr));
         }
     }
     ret.as = move(map);

@@ -58,8 +58,8 @@ PYBIND11_MODULE(model, m) {
             ))
             .def(
                     "__call__",
-                    py::overload_cast<const dltools::Hit &>
-                            (&dltools::sacla::Models::operator(), py::const_),
+                    (dltools::Hit (dltools::sacla::Models::*)(const dltools::Hit &) const)
+                    &dltools::sacla::Models::operator(),
                     R"pbdoc(
                         Analyze momentum of a Hit. Hit (t, x, y) will be calibrated to...
                           (t) -> (t - t0),
@@ -71,8 +71,8 @@ PYBIND11_MODULE(model, m) {
             )
             .def(
                     "__call__",
-                    py::overload_cast<const std::vector<dltools::Hit> &>
-                            (&dltools::sacla::Models::operator(), py::const_),
+                    (std::vector<dltools::Hit> (dltools::sacla::Models::*)(const std::vector<dltools::Hit> &) const)
+                    &dltools::sacla::Models::operator(),
                     R"pbdoc(
                         Analyze momentum of Hits. All Hit (t, x, y) will be calibrated to...
                           (t) -> (t - t0),

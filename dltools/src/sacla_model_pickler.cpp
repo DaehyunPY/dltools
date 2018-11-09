@@ -8,6 +8,7 @@
 using namespace pybind11::literals;
 using std::move;
 using std::string;
+using std::pair;
 using std::unordered_map;
 using dltools::sacla::Model;
 using dltools::sacla::Models;
@@ -34,8 +35,8 @@ dltools::sacla::Model dltools::sacla::_model__setstate__(pybind11::dict d) {
 
 pybind11::dict dltools::sacla::_models__getstate__(const dltools::sacla::Models &m) {
     pybind11::dict d;
-    for (const auto &pair : m._models()) {
-        d[pybind11::cast(pair.first)] = _model__getstate__(pair.second);
+    for (const auto &p : m._models()) {
+        d[pybind11::cast(p.first)] = _model__getstate__(p.second);
     }
     return pybind11::dict(
             "models"_a = move(d),
@@ -47,9 +48,11 @@ pybind11::dict dltools::sacla::_models__getstate__(const dltools::sacla::Models 
 
 dltools::sacla::Models dltools::sacla::_models__setstate__(pybind11::dict d) {
     unordered_map<string, Model> map;
-    for (const auto &pair : d["models"].cast<pybind11::dict>()) {
-        map.insert({pair.first.cast<string>(),
-                    dltools::sacla::_model__setstate__(pair.second.cast<pybind11::dict>())});
+    for (const auto &p : d["models"].cast<pybind11::dict>()) {
+        map.insert(
+                pair<string, Model>{p.first.cast<string>(),
+                                    dltools::sacla::_model__setstate__(p.second.cast<pybind11::dict>())}
+        );
     }
     return dltools::sacla::Models(
             move(map),

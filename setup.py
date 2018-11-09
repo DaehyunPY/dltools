@@ -1,6 +1,5 @@
 from sys import platform
-from distutils.extension import Extension
-from setuptools import setup
+from setuptools import setup, Extension
 from Cython.Build import cythonize
 try:
     import numpy
@@ -28,8 +27,9 @@ ext_modules = [
             'include',
         ],
         extra_compile_args=[
-            "-std=c++14",
+            "-std=c++11",
             *(["-stdlib=libc++"] if platform == 'darwin' else []),
+            "-static-libstdc++",
         ],
         language='c++',
     ),
@@ -46,8 +46,9 @@ ext_modules = [
             'include',
         ],
         extra_compile_args=[
-            "-std=c++14",
+            "-std=c++11",
             *(["-stdlib=libc++"] if platform == 'darwin' else []),
+            "-static-libstdc++",
         ],
         language='c++',
     ),
@@ -62,7 +63,6 @@ ext_modules = [
                   if numpy else []),
                 'include',
             ],
-            language='c++',
         ),
     ]),
 ]
