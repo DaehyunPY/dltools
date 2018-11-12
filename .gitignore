@@ -1,4 +1,5 @@
 cmake-build-debug
+.ipynb_checkpoints
 __pycache__
 /.idea
 /build

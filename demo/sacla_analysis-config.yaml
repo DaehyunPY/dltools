@@ -1,9 +1,8 @@
 # Target resored root (*SortEvent*.root) files.
 target_files:
-  - <path/to/target1.root>
-  - <path/to/target2.root>
+  - sacla_analysis-resorted.root
 
-# MongoDB collection where analyzed Hits will be saved.
+# MongoDB collection where analyzed Hits will be saved. Not supported yet.
 save_to: mongodb://<addr>/<db>.<collection>
 
 # Parameters of SACLA momentum models (momentum analyzer). Hit (t, x, y)
@@ -11,38 +10,38 @@ save_to: mongodb://<addr>/<db>.<collection>
 #   (t) -> (t - t0),
 #   (x, y) -> ((x, y) * rot(th) - (x0, y0)) * (dx, dy).
 momentum_analyzer:
-  t0: 0  # A calibration factor. Default: 0.
+  t0: 626.6  # A calibration factor. Default: 0.
   th: 0  # A calibration factor. Default: 0.
   x0: 0  # A calibration factor. Default: 0.
   y0: 0  # A calibration factor. Default: 0.
   dx: 1  # A calibration factor. Default: 1.
   dy: 1  # A calibration factor. Default: 1.
   models:  # SACLA momentum models.
-    <particle>:
+    particle_a:
       # Mass of the model particle. This parameter will be used to
       # calculate kinetic energy from three-dimensional momentum...
       #   (px, py, pz) -> (px**2 + py**2 + pz**2) / 2 / mass.
       # This program does not consider units. You may want to
       # convert the unit of kinetic energy implictly, here.
-      mass: 1
+      mass: 8501.3198901104  # = 126.90447 * 1822.888486192 / 27.21138602
       # Coefficients of momentum model in the z direction.
       pz_coeffs:
-        - 0
-        - 0
-        - 0
-        - 0
-        - 0
-        - 0
-        - 0
+        - 26824.7
+        - -14.2786
+        - 0.000193147
+        - 6.57577e-007
+        - -6.55786e-011
+        - -0.0462857
+        - 1.99704e-006
       # Coefficients of momentum model in the r direction.
       pr_coeffs:
-        - 0
-        - 0
-        - 0
-        - 0
-        - 0
-        - 0
-      fr: 0  # Lower limit of flight time. Default: 0.
-      to: .inf  # Upper limit of flight time. Default: .inf.
+        - 22.5668
+        - -0.00087779
+        - 4.24205e-008
+        - -2.76085e-012
+        - 4.22634e-011
+        - -1.98336e-018
+      fr: 4561.4  # Lower limit of flight time. Default: 0.
+      to: 4726.4  # Upper limit of flight time. Default: .inf.
       x1: 0  # A calibration factor. Default: 0.
       y1: 0  # A calibration factor. Default: 0.
