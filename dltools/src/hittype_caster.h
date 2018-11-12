@@ -113,15 +113,15 @@ namespace pybind11 { namespace detail {
                 }
                 value.y = cast_op<double>(v);
             }
-            {  // as
-                if (d.contains("as")) {
+            {  // as_
+                if (d.contains("as_")) {
                     make_caster<std::unordered_map<std::string, dltools::AnalyzedHit>> v;
-                    if (not v.load(d["as"].ptr(), convert)) {
+                    if (not v.load(d["as_"].ptr(), convert)) {
                         return false;
                     }
-                    value.as = cast_op<std::unordered_map<std::string, dltools::AnalyzedHit> &&>(std::move(v));
+                    value.as_ = cast_op<std::unordered_map<std::string, dltools::AnalyzedHit> &&>(std::move(v));
                 } else {
-                    value.as = {};
+                    value.as_ = {};
                 }
             }
             {  // flag
@@ -165,18 +165,18 @@ namespace pybind11 { namespace detail {
                     d["y"] = v;
                 }
             }
-            {  // as
+            {  // as_
                 return_value_policy p =
                         return_value_policy_override<std::unordered_map<std::string, dltools::AnalyzedHit>>
                         ::policy(policy);
                 auto v = reinterpret_steal<object>(
                         make_caster<std::unordered_map<std::string, dltools::AnalyzedHit>>
-                        ::cast(forward_like<T>(src.as), p, parent)
+                        ::cast(forward_like<T>(src.as_), p, parent)
                 );
                 if (not v) {
                     return handle();
                 }
-                d["as"] = v;
+                d["as_"] = v;
             }
             {  // flag
                 if (src.flag) {
@@ -208,15 +208,26 @@ namespace pybind11 { namespace detail {
                 }
                 value.comb = cast_op<std::vector<dltools::Hit>>(v);
             }
-            {  // as
-                if (d.contains("as")) {
+            {  // as_
+                if (d.contains("as_")) {
                     make_caster<std::unordered_map<std::string, dltools::AnalyzedHit>> v;
-                    if (not v.load(d["as"].ptr(), convert)) {
+                    if (not v.load(d["as_"].ptr(), convert)) {
                         return false;
                     }
-                    value.as = cast_op<std::unordered_map<std::string, dltools::AnalyzedHit> &&>(std::move(v));
+                    value.as_ = cast_op<std::unordered_map<std::string, dltools::AnalyzedHit> &&>(std::move(v));
                 } else {
-                    value.as = {};
+                    value.as_ = {};
+                }
+            }
+            {  // flag
+                if (d.contains("flag")) {
+                    make_caster<int> v;
+                    if (not v.load(d["flag"].ptr(), convert)) {
+                        return false;
+                    }
+                    value.flag = std::make_shared<int>(cast_op<int>(v));
+                } else {
+                    value.flag = nullptr;
                 }
             }
             return true;
@@ -236,18 +247,28 @@ namespace pybind11 { namespace detail {
                 }
                 d["comb"] = v;
             }
-            {  // as
+            {  // as_
                 return_value_policy p =
                         return_value_policy_override<std::unordered_map<std::string, dltools::AnalyzedHit>>
                         ::policy(policy);
                 auto v = reinterpret_steal<object>(
                         make_caster<std::unordered_map<std::string, dltools::AnalyzedHit>>
-                        ::cast(forward_like<T>(src.as), p, parent)
+                        ::cast(forward_like<T>(src.as_), p, parent)
                 );
                 if (not v) {
                     return handle();
                 }
-                d["as"] = v;
+                d["as_"] = v;
+            }
+            {  // flag
+                if (src.flag) {
+                    return_value_policy p = return_value_policy_override<int>::policy(policy);
+                    auto v = reinterpret_steal<object>(make_caster<int>::cast(forward_like<T>(*src.flag), p, parent));
+                    if (not v) {
+                        return handle();
+                    }
+                    d["flag"] = v;
+                }
             }
             return d.release();
         }

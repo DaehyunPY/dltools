@@ -39,15 +39,18 @@ namespace dltools {
 
 
     /**
-     * Detected Hit (t, x, y) and map to analyzied momentum (as).
+     * Detected Hit (t, x, y) and map to analyzied momentum (as_).
      */
     struct Hit {
         double t, x, y;
-        std::unordered_map<std::string, AnalyzedHit> as;
+        std::unordered_map<std::string, AnalyzedHit> as_;
         std::shared_ptr<int> flag;
 
         explicit operator std::string() const;
     };
+
+
+    typedef std::vector<Hit> Hits;
 
 
     // TODO Add document
@@ -65,8 +68,12 @@ namespace dltools {
     // TODO Add document
     struct CombinedHit {
         std::vector<Hit> comb;
-        std::unordered_map<std::string, AnalyzedHit> as;
+        std::unordered_map<std::string, AnalyzedHit> as_;
+        std::shared_ptr<int> flag;
     };
+
+
+    typedef std::vector<CombinedHit> CombinedHits;
 
 
     // TODO Add document

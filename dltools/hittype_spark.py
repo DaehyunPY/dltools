@@ -25,7 +25,7 @@ SpkHit = StructType([
     StructField('t', DoubleType(), nullable=False),
     StructField('x', DoubleType(), nullable=False),
     StructField('y', DoubleType(), nullable=False),
-    StructField('as', MapType(StringType(), SpkAnalyzedHit), nullable=False),
+    StructField('as_', MapType(StringType(), SpkAnalyzedHit), nullable=False),
     StructField('flag', IntegerType(), nullable=True),
 ])
 
@@ -33,7 +33,8 @@ SpkHits = ArrayType(SpkHit)
 
 SpkCombinedHit = StructType([
     StructField('comb', SpkHits, nullable=False),
-    StructField('as', MapType(StringType(), SpkAnalyzedHit), nullable=False),
+    StructField('as_', MapType(StringType(), SpkAnalyzedHit), nullable=False),
+    StructField('flag', IntegerType(), nullable=True),
 ])
 
 SpkCombinedHits = ArrayType(SpkCombinedHit)

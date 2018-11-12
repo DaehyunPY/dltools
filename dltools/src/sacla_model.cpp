@@ -73,7 +73,7 @@ dltools::Hit dltools::sacla::Models::operator()(const dltools::Hit &hit) const {
             .t=hit.t - __t0,
             .x=__dx * (cos(__th) * hit.x - sin(__th) * hit.y - __x0),
             .y=__dy * (sin(__th) * hit.x + cos(__th) * hit.y - __y0),
-            .as={},
+            .as_={},
             .flag=hit.flag
     };
     unordered_map<string, AnalyzedHit> map;
@@ -83,7 +83,7 @@ dltools::Hit dltools::sacla::Models::operator()(const dltools::Hit &hit) const {
             map.insert(pair<string, AnalyzedHit>(m.first, *ptr));
         }
     }
-    ret.as = move(map);
+    ret.as_ = move(map);
     return ret;
 }
 

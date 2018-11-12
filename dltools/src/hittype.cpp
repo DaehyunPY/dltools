@@ -8,10 +8,12 @@
 
 using std::move;
 using std::fill;
+using std::shared_ptr;
 using std::make_shared;
 using std::vector;
 using std::string;
 using std::to_string;
+using std::max;
 using std::prev_permutation;
 using dltools::AnalyzedHit;
 using dltools::Hit;
@@ -61,7 +63,7 @@ std::vector<Hit> dltools::zip_to_hits(std::vector<double> t,
             .t=*it,
             .x=*ix,
             .y=*iy,
-            .as={},
+            .as_={},
             .flag=make_shared<int>(*iflag)
         });
     }
@@ -72,7 +74,7 @@ std::vector<Hit> dltools::zip_to_hits(std::vector<double> t,
 vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r) {
     std::vector<Hit> filtered;
     for (auto &h : hits) {
-        if (not h.as.empty()) {
+        if (not h.as_.empty()) {
             filtered.push_back(move(h));
         }
     }
@@ -85,7 +87,7 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r) {
     vector<bool> pool(n, false);
     fill(pool.begin(), pool.begin() + r, true);
     do {
-        CombinedHit hit;
+        CombinedHit hit{};
         {  // Set member CombinedHit::comb
             vector<int> indexes;
             for (int j = 0; j < n; ++j) {
@@ -93,17 +95,28 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r) {
                     indexes.push_back(j);
                 }
             }
+            shared_ptr<int> flag;
             for (auto j : indexes) {
                 hit.comb.push_back(filtered[j]);
+                if (flag) {
+                    if (filtered[j].flag) {
+                        flag = make_shared<int>(max(*flag, *filtered[j].flag));
+                    }
+                } else {
+                    if (filtered[j].flag) {
+                        flag = make_shared<int>(*filtered[j].flag);
+                    }
+                }
             }
+            hit.flag = flag;
         }
-        {  // Set member CombinedHit::as
+        {  // Set member CombinedHit::as_
             int m = 1;  // Number of total loop
             vector<vector<const string *>> indexes;  // Vector of indexed key list
             for (const auto &h : hit.comb) {  // Set variable m and indexes
-                m *= h.as.size();
+                m *= h.as_.size();
                 vector<const string *> tmp;
-                for (const auto &d : h.as) {
+                for (const auto &d : h.as_) {
                     tmp.push_back(&d.first);
                 }
                 indexes.push_back(move(tmp));
@@ -114,14 +127,14 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r) {
                 AnalyzedHit summed{};
                 for (auto j = 0; j < r; ++j) {  // j: Index of the member of combination
                     const auto &h = hit.comb[j];
-                    auto k = tmp % h.as.size();  // k: Index of the keys of as
-                    tmp /= h.as.size();
-                    const auto &found = h.as.at(*indexes[j][k]);
+                    auto k = tmp % h.as_.size();  // k: Index of the keys of as_
+                    tmp /= h.as_.size();
+                    const auto &found = h.as_.at(*indexes[j][k]);
                     key += *indexes[j][k] + ",";
                     summed += found;
                 }
                 key.pop_back();
-                hit.as.insert({move(key), summed});
+                hit.as_.insert({move(key), summed});
             }
         }
         ret.push_back(move(hit));
@@ -135,7 +148,7 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r,
     std::vector<Hit> filtered;
     for (auto &h : hits) {
         bool found = false;
-        for (const auto &d : h.as) {
+        for (const auto &d : h.as_) {
             if (white_list.find(d.first) != white_list.end()) {
                 found = true;
                 continue;
@@ -154,7 +167,7 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r,
     vector<bool> pool(n, false);
     fill(pool.begin(), pool.begin() + r, true);
     do {
-        CombinedHit hit;
+        CombinedHit hit{};
         {  // Set member CombinedHit::comb
             vector<int> indexes;
             for (int j = 0; j < n; ++j) {
@@ -162,17 +175,28 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r,
                     indexes.push_back(j);
                 }
             }
+            shared_ptr<int> flag;
             for (auto j : indexes) {
                 hit.comb.push_back(filtered[j]);
+                if (flag) {
+                    if (filtered[j].flag) {
+                        flag = make_shared<int>(max(*flag, *filtered[j].flag));
+                    }
+                } else {
+                    if (filtered[j].flag) {
+                        flag = make_shared<int>(*filtered[j].flag);
+                    }
+                }
             }
+            hit.flag = flag;
         }
-        {  // Set member CombinedHit::as
+        {  // Set member CombinedHit::as_
             int m = 1;  // Number of total loop
             vector<vector<const string *>> indexes;  // Vector of indexed key list
             for (const auto &h : hit.comb) {  // Set variable m and indexes
-                m *= h.as.size();
+                m *= h.as_.size();
                 vector<const string *> tmp;
-                for (const auto &d : h.as) {
+                for (const auto &d : h.as_) {
                     tmp.push_back(&d.first);
                 }
                 indexes.push_back(move(tmp));
@@ -183,14 +207,14 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r,
                 AnalyzedHit summed{};
                 for (auto j = 0; j < r; ++j) {  // j: Index of the member of combination
                     const auto &h = hit.comb[j];
-                    auto k = tmp % h.as.size();  // k: Index of the keys of as
-                    tmp /= h.as.size();
-                    const auto &found = h.as.at(*indexes[j][k]);
+                    auto k = tmp % h.as_.size();  // k: Index of the keys of as_
+                    tmp /= h.as_.size();
+                    const auto &found = h.as_.at(*indexes[j][k]);
                     key += *indexes[j][k] + ",";
                     summed += found;
                 }
                 key.pop_back();
-                hit.as.insert({move(key), summed});
+                hit.as_.insert({move(key), summed});
             }
         }
         ret.push_back(move(hit));
