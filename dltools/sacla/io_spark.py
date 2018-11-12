@@ -10,7 +10,7 @@ __all__ = [
 
 
 def restructure(df: DataFrame) -> DataFrame:
-    zipped = udf(SpkHits)(zip_to_hits)
+    zipped = udf(zip_to_hits, SpkHits)
     c = col('SortedEvent.fDetektors')[0]['fDetektors_fHits']
     return df.select(
         col('SortedEvent.fEventID').alias("tag"),
@@ -20,4 +20,4 @@ def restructure(df: DataFrame) -> DataFrame:
 
 def load_analyzer(config: dict) -> Column:
     model = Models(models={k: Model(**m) for k, m in config.pop("models").items()}, **config)
-    return udf(SpkHits)(model)
+    return udf(model, SpkHits)

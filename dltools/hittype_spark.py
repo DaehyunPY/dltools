@@ -42,5 +42,5 @@ SpkCombinedHits = ArrayType(SpkCombinedHit)
 
 def load_combiner(r: int, white_list: Optional[Set[str]] = None) -> Column:
     if white_list is None:
-        return udf(SpkCombinedHits)(partial(combine, r=r))
-    return udf(SpkCombinedHits)(partial(combine, r=r, white_list=white_list))
+        return udf(partial(combine, r=r), SpkCombinedHits)
+    return udf(partial(combine, r=r, white_list=white_list), SpkCombinedHits)
