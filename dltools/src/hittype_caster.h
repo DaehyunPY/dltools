@@ -6,6 +6,7 @@
 #define DLTOOLS_HITTYPE_CASTER_H
 
 
+#include <pybind11/pybind11.h>
 #include "hittype.h"
 
 
