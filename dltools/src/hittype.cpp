@@ -2,6 +2,9 @@
 // Created by Daehyun You on 11/5/18.
 //
 
+#include <random>
+#include <unordered_map>
+#include <unordered_set>
 #include <algorithm>
 #include "hittype.h"
 
@@ -13,7 +16,11 @@ using std::make_shared;
 using std::vector;
 using std::string;
 using std::to_string;
+using std::unordered_map;
+using std::unordered_set;
+using std::pair;
 using std::max;
+using std::min_element;
 using std::prev_permutation;
 using dltools::AnalyzedHit;
 using dltools::Hit;
@@ -147,7 +154,7 @@ dltools::CombinedHits dltools::combine(dltools::Hits hits, int r) {
 }
 
 
-dltools::CombinedHits dltools::combine(dltools::Hits hits, int r, std::unordered_set<std::string> white_list) {
+dltools::CombinedHits dltools::combine(dltools::Hits hits, int r, const std::unordered_set<string> &white_list) {
     Hits filtered;
     for (auto &h : hits) {
         bool found = false;
@@ -222,5 +229,123 @@ dltools::CombinedHits dltools::combine(dltools::Hits hits, int r, std::unordered
         }
         ret.push_back(move(hit));
     } while (prev_permutation(pool.begin(), pool.end()));
+    return ret;
+}
+
+
+CombinedHit dltools::as_minsqsum(CombinedHit hit) {
+    unordered_map<string, double> sqsum;
+    for (const auto &p : hit.as_) {
+        sqsum.insert(pair<string, double>(
+                p.first,
+                p.second.pz * p.second.pz
+                + p.second.px * p.second.px
+                + p.second.py * p.second.py
+        ));
+    }
+    auto found = min_element(
+            sqsum.begin(),
+            sqsum.end(),
+            [](const pair<string, double> &a, const pair<string, double> &b) {
+                return a.second < b.second;
+            }
+    );
+    unordered_map<string, AnalyzedHit> as_;
+    if (found != sqsum.end()) {
+        as_.insert({found->first, hit.as_.at(found->first)});
+    }
+    return CombinedHit{
+        .comb=move(hit.comb),
+        .as_=move(as_),
+        .flag=hit.flag
+    };
+}
+
+
+CombinedHit dltools::as_minsqsum(CombinedHit hit, const std::unordered_set<string> &white_list) {
+    unordered_map<string, double> sqsum;
+    for (const auto &p : hit.as_) {
+        if (white_list.find(p.first) != white_list.end()) {
+            sqsum.insert(pair<string, double>(
+                    p.first,
+                    p.second.pz * p.second.pz
+                    + p.second.px * p.second.px
+                    + p.second.py * p.second.py
+            ));
+        }
+    }
+    auto found = min_element(
+            sqsum.begin(),
+            sqsum.end(),
+            [](const pair<string, double> &a, const pair<string, double> &b) {
+                return a.second < b.second;
+            }
+    );
+    unordered_map<string, AnalyzedHit> as_;
+    if (found != sqsum.end()) {
+        as_.insert({found->first, hit.as_.at(found->first)});
+    }
+    return CombinedHit{
+            .comb=move(hit.comb),
+            .as_=move(as_),
+            .flag=hit.flag
+    };
+}
+
+
+CombinedHits dltools::as_minsqsum(CombinedHits hits) {
+    dltools::CombinedHits ret;
+    for (auto &h : hits) {
+        auto min = as_minsqsum(move(h));
+        if (not min.as_.empty()) {
+            ret.push_back(move(min));
+        }
+    }
+    return ret;
+}
+
+
+CombinedHits dltools::as_minsqsum(CombinedHits hits, const std::unordered_set<std::string> &white_list) {
+    dltools::CombinedHits ret;
+    for (auto &h : hits) {
+        auto min = as_minsqsum(move(h), white_list);
+        if (not min.as_.empty()) {
+            ret.push_back(move(min));
+        }
+    }
+    return ret;
+}
+
+
+CombinedHits dltools::filter_duphits(CombinedHits hits) {
+    auto n = hits.size();
+    vector<int> index(n);
+    for (auto i = 0; i < n; ++i) {
+        index.push_back(i);
+    }
+    std::shuffle(index.begin(), index.end(), std::mt19937(std::random_device()()));
+    unordered_set<double> pool;
+    vector<bool> where(n, false);
+    for (auto i : index) {
+        bool found = false;
+        for (const auto &h : hits[i].comb) {
+            if (pool.find(h.t) != pool.end()) {
+                found = true;
+                break;
+            }
+        }
+        if (not found) {
+            where[i] = true;
+            for (const auto &h : hits[i].comb) {
+                pool.insert(h.t);
+            }
+        }
+    }
+    dltools::CombinedHits ret;
+    for (auto i = 0; i < n; ++i) {
+        if (where[i]) {
+            ret.push_back(move(hits[i]));
+        }
+    }
     return ret;
 }

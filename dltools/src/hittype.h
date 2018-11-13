@@ -56,7 +56,9 @@ namespace dltools {
     Hits zip_to_hits(std::vector<double> t, std::vector<double> x, std::vector<double> y, std::vector<int> flag);
 
 
-    // TODO Add document
+    /**
+     * A combination of Hits.
+     */
     struct CombinedHit {
         Hits comb;
         std::unordered_map<std::string, AnalyzedHit> as_;
@@ -67,7 +69,16 @@ namespace dltools {
 
     // TODO Add document
     CombinedHits combine(Hits hits, int r);
-    CombinedHits combine(Hits hits, int r, std::unordered_set<std::string> white_list);
+    CombinedHits combine(Hits hits, int r, const std::unordered_set<std::string> &white_list);
+
+    // TODO Add document
+    CombinedHit as_minsqsum(CombinedHit hit);
+    CombinedHit as_minsqsum(CombinedHit hit, const std::unordered_set<std::string> &white_list);
+    CombinedHits as_minsqsum(CombinedHits hits);
+    CombinedHits as_minsqsum(CombinedHits hits, const std::unordered_set<std::string> &white_list);
+
+    // TODO Add document
+    CombinedHits filter_duphits(CombinedHits hits);
 }
 
 
