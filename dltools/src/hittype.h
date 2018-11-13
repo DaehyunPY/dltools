@@ -48,40 +48,26 @@ namespace dltools {
 
         explicit operator std::string() const;
     };
-
-
     typedef std::vector<Hit> Hits;
 
 
     // TODO Add document
-    std::vector<Hit> zip_to_hits(std::vector<double> t,
-                                 std::vector<double> x,
-                                 std::vector<double> y);
-
-    // TODO Add document
-    std::vector<Hit> zip_to_hits(std::vector<double> t,
-                                 std::vector<double> x,
-                                 std::vector<double> y,
-                                 std::vector<int> flag);
+    Hits zip_to_hits(std::vector<double> t, std::vector<double> x, std::vector<double> y);
+    Hits zip_to_hits(std::vector<double> t, std::vector<double> x, std::vector<double> y, std::vector<int> flag);
 
 
     // TODO Add document
     struct CombinedHit {
-        std::vector<Hit> comb;
+        Hits comb;
         std::unordered_map<std::string, AnalyzedHit> as_;
         std::shared_ptr<int> flag;
     };
-
-
     typedef std::vector<CombinedHit> CombinedHits;
 
 
     // TODO Add document
-    std::vector<CombinedHit> combine(std::vector<Hit> hits, int r);
-
-    // TODO Add document
-    std::vector<CombinedHit> combine(std::vector<Hit> hits, int r,
-                                     std::unordered_set<std::string> white_list);
+    CombinedHits combine(Hits hits, int r);
+    CombinedHits combine(Hits hits, int r, std::unordered_set<std::string> white_list);
 }
 
 

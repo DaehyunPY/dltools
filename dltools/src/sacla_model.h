@@ -136,7 +136,7 @@ namespace dltools { namespace sacla {
          * @param hits Hits to be analyzed.
          * @return Calibrated Hits with maps to momentum and kinetic energy.
          */
-        std::vector<Hit> operator()(const std::vector<Hit> &hits) const;
+        dltools::Hits operator()(const dltools::Hits &hits) const;
 
         explicit operator std::string() const;
 

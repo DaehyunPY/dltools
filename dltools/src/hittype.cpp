@@ -17,7 +17,9 @@ using std::max;
 using std::prev_permutation;
 using dltools::AnalyzedHit;
 using dltools::Hit;
+using dltools::Hits;
 using dltools::CombinedHit;
+using dltools::CombinedHits;
 
 
 dltools::AnalyzedHit::operator std::string() const {
@@ -35,10 +37,11 @@ dltools::Hit::operator std::string() const {
 }
 
 
-std::vector<Hit> dltools::zip_to_hits(std::vector<double> t,
-                                      std::vector<double> x,
-                                      std::vector<double> y) {
-    std::vector<Hit> ret;
+dltools::Hits dltools::zip_to_hits(
+        std::vector<double> t,
+        std::vector<double> x,
+        std::vector<double> y) {
+    Hits ret;
     auto it = t.begin();
     auto ix = x.begin();
     auto iy = y.begin();
@@ -46,14 +49,15 @@ std::vector<Hit> dltools::zip_to_hits(std::vector<double> t,
         ret.push_back(Hit{.t=*it, .x=*ix, .y=*iy});
     }
     return ret;
-};
+}
 
 
-std::vector<Hit> dltools::zip_to_hits(std::vector<double> t,
-                                      std::vector<double> x,
-                                      std::vector<double> y,
-                                      std::vector<int> flag) {
-    std::vector<Hit> ret;
+dltools::Hits dltools::zip_to_hits(
+        std::vector<double> t,
+        std::vector<double> x,
+        std::vector<double> y,
+        std::vector<int> flag) {
+    Hits ret;
     auto it = t.begin();
     auto ix = x.begin();
     auto iy = y.begin();
@@ -71,8 +75,8 @@ std::vector<Hit> dltools::zip_to_hits(std::vector<double> t,
 }
 
 
-vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r) {
-    std::vector<Hit> filtered;
+dltools::CombinedHits dltools::combine(dltools::Hits hits, int r) {
+    Hits filtered;
     for (auto &h : hits) {
         if (not h.as_.empty()) {
             filtered.push_back(move(h));
@@ -80,10 +84,10 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r) {
     }
     auto n = filtered.size();
     if (n < r) {
-        return vector<CombinedHit>();
+        return CombinedHits();
     }
 
-    auto ret = vector<CombinedHit>();
+    auto ret = CombinedHits();
     vector<bool> pool(n, false);
     fill(pool.begin(), pool.begin() + r, true);
     do {
@@ -140,12 +144,11 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r) {
         ret.push_back(move(hit));
     } while (prev_permutation(pool.begin(), pool.end()));
     return ret;
-};
+}
 
 
-vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r,
-                                              std::unordered_set<std::string> white_list) {
-    std::vector<Hit> filtered;
+dltools::CombinedHits dltools::combine(dltools::Hits hits, int r, std::unordered_set<std::string> white_list) {
+    Hits filtered;
     for (auto &h : hits) {
         bool found = false;
         for (const auto &d : h.as_) {
@@ -160,10 +163,10 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r,
     }
     auto n = filtered.size();
     if (n < r) {
-        return vector<CombinedHit>();
+        return CombinedHits();
     }
 
-    auto ret = vector<CombinedHit>();
+    auto ret = CombinedHits();
     vector<bool> pool(n, false);
     fill(pool.begin(), pool.begin() + r, true);
     do {
@@ -220,4 +223,4 @@ vector<dltools::CombinedHit> dltools::combine(std::vector<Hit> hits, int r,
         ret.push_back(move(hit));
     } while (prev_permutation(pool.begin(), pool.end()));
     return ret;
-};
+}

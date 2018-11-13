@@ -16,6 +16,7 @@ using std::pair;
 using std::unordered_map;
 using dltools::AnalyzedHit;
 using dltools::Hit;
+using dltools::Hits;
 
 
 double dltools::sacla::_pz_model(double r, double t, const std::array<double, 7> &coeffs) {
@@ -98,8 +99,8 @@ dltools::sacla::Models::operator std::string() const {
 }
 
 
-std::vector<dltools::Hit> dltools::sacla::Models::operator()(const std::vector<dltools::Hit> &hits) const {
-    auto ret = std::vector<Hit>{};
+dltools::Hits dltools::sacla::Models::operator()(const dltools::Hits &hits) const {
+    auto ret = Hits{};
     for (const auto &h : hits) {
         ret.push_back((*this)(h));
     }
