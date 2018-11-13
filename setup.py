@@ -84,6 +84,7 @@ setup(
     install_requires=[
         'numpy',
         'pyspark',
+        'cytoolz',
     ],
     zip_safe=False,
 )

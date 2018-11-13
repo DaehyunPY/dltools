@@ -1,9 +1,11 @@
-from typing import Set, Optional
+from typing import List, Optional
 from functools import partial
+from itertools import chain
+from cytoolz import identity, compose
 from pyspark.sql import Column
 from pyspark.sql.types import StructType, StructField, ArrayType, MapType, IntegerType, DoubleType, StringType
 from pyspark.sql.functions import udf
-from . import combine
+from . import combine, as_minsqsum, filter_duphits
 
 __all__ = [
     'SpkAnalyzedHit',
@@ -40,7 +42,26 @@ SpkCombinedHit = StructType([
 SpkCombinedHits = ArrayType(SpkCombinedHit)
 
 
-def load_combiner(r: int, white_list: Optional[Set[str]] = None) -> Column:
+def load_combiner(r: int,
+                  white_list: Optional[List[List[str]]] = None,
+                  allow_various: bool = True,
+                  allow_dup: bool = True) -> Column:
     if white_list is None:
-        return udf(partial(combine, r=r), SpkCombinedHits)
-    return udf(partial(combine, r=r, white_list=white_list), SpkCombinedHits)
+        f = partial(combine, r=r)
+    else:
+        for arr in white_list:
+            if len(arr) != r:
+                raise ValueError(f"The length of 'white_list' element must be the value of 'r', {r}!")
+        f = partial(combine, r=r, white_list={i for i in chain.from_iterable(white_list)})
+    if allow_various:
+        g = identity
+    else:
+        if white_list is None:
+            g = as_minsqsum
+        else:
+            g = partial(as_minsqsum, white_list={",".join(arr) for arr in white_list})
+    if allow_dup:
+        h = identity
+    else:
+        h = filter_duphits
+    return udf(compose(h, g, f), SpkCombinedHits)
