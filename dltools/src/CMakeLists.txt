@@ -1,6 +1,13 @@
-cmake_minimum_required(VERSION 3.12)
-project(dltools)
+pybind11_add_module(
+        hittype
+        hittype_binder.cpp
+        hittype.cpp
+)
 
-set(CMAKE_CXX_STANDARD 11)
-
-add_library(dltools STATIC sacla_model.cpp hittype.cpp)
+pybind11_add_module(
+        sacla_model
+        sacla_model_binder.cpp
+        sacla_model_pickler.cpp
+        sacla_model.cpp
+        hittype.cpp
+)
