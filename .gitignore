@@ -1,7 +1,13 @@
 cmake-build-debug
 .ipynb_checkpoints
 __pycache__
+/dltools/lmafmt.cpp
+/Pipfile
+/Pipfile.lock
+/.env
 /.idea
+/.vscode
 /build
 /dist
+/wheelhouse
 /*.egg-info
