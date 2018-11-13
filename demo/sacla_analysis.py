@@ -1,10 +1,13 @@
 from pprint import pprint
-from itertools import chain
-from functools import reduce
+from itertools import chain, compress
+from functools import reduce, partial
 from glob import iglob
 from yaml import safe_load
-from pyspark.sql import SparkSession, DataFrame, functions as f
-from dltools import load_combiner
+from numba import jit
+from cytoolz import compose
+from pyspark.sql import SparkSession, Row, DataFrame, functions as f
+from pyspark.sql.types import ArrayType, BooleanType
+from dltools import SpkHits, load_combiner
 from dltools.sacla import restructure, load_analyzer
 
 
@@ -52,7 +55,18 @@ with builder.getOrCreate() as spark:
 
     # %% Analyze momentum
     print("Analyzing momentum...")
-    analyzed = df.select(analyzer(f.col("hits")).alias("analyzed"))
+
+    @jit(nopython=True, nogil=True)
+    def isgood(flag):
+        return flag <= 6
+
+    wheregood = f.udf(compose(list, partial(map, isgood)), ArrayType(BooleanType()))
+    hitfilter = f.udf(compose(list, partial(map, Row.asDict), compress), SpkHits)
+    analyzed = (
+        df
+            .withColumn("filtered", hitfilter("hits", wheregood("hits.flag")))
+            .withColumn("analyzed", analyzer("filtered"))
+    )
     analyzed.printSchema()
     analyzed.show()
     print(
@@ -66,13 +80,14 @@ with builder.getOrCreate() as spark:
 
     # %% Combine hits
     print("Combining hits...")
-    combined = analyzed.select(load_combiner(r=2)(f.col("analyzed")).alias("combined"))
+    combiner = load_combiner(r=2, white_list=[["particle_b", "particle_a"]], allow_various=False, allow_dup=False)
+    combined = analyzed.withColumn("combined", combiner("analyzed"))
     combined.printSchema()
     combined.show()
     print(
         combined
-            .select(f.explode("combined").alias("h"))
-            .select(f.explode("h.as_").alias("as_", "m"))
+            .select(f.explode("combined.as_").alias("h"))
+            .select(f.explode("h").alias("as_", "m"))
             .select("as_", "m.*")
             .limit(20)
             .toPandas()
