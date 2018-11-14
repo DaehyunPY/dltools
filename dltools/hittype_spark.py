@@ -3,7 +3,10 @@ from functools import partial
 from itertools import chain
 from cytoolz import identity, compose
 from pyspark.sql import Column
-from pyspark.sql.types import StructType, StructField, ArrayType, MapType, IntegerType, DoubleType, StringType
+from pyspark.sql.types import (
+    StructType, StructField, MapType, StringType, ArrayType,
+    IntegerType, DoubleType,
+)
 from pyspark.sql.functions import udf
 from . import combine, as_minsqsum, filter_duphits
 
@@ -51,15 +54,25 @@ def load_combiner(r: int,
     else:
         for arr in white_list:
             if len(arr) != r:
-                raise ValueError(f"The length of 'white_list' element must be the value of 'r', {r}!")
-        f = partial(combine, r=r, white_list={i for i in chain.from_iterable(white_list)})
+                raise ValueError(
+                    "The length of 'white_list' element must be"
+                    "the value of 'r', {}!".format(r)
+                )
+        f = partial(
+            combine,
+            r=r,
+            white_list={i for i in chain.from_iterable(white_list)},
+        )
     if allow_various:
         g = identity
     else:
         if white_list is None:
             g = as_minsqsum
         else:
-            g = partial(as_minsqsum, white_list={",".join(arr) for arr in white_list})
+            g = partial(
+                as_minsqsum,
+                white_list={",".join(arr) for arr in white_list},
+            )
     if allow_dup:
         h = identity
     else:

@@ -14,10 +14,18 @@ def restructure(df: DataFrame) -> DataFrame:
     c = col('SortedEvent.fDetektors')[0]['fDetektors_fHits']
     return df.select(
         col('SortedEvent.fEventID').alias("tag"),
-        zipped(c['fTime'], c['fX_mm'], c['fY_mm'], c['fRekmeth']).alias('hits'),
+        zipped(
+            c['fTime'],
+            c['fX_mm'],
+            c['fY_mm'],
+            c['fRekmeth'],
+        ).alias('hits'),
     )
 
 
 def load_analyzer(config: dict) -> Column:
-    model = Models(models={k: Model(**m) for k, m in config.pop("models").items()}, **config)
+    model = Models(
+        models={k: Model(**m) for k, m in config.pop("models").items()},
+        **config,
+    )
     return udf(model, SpkHits)
