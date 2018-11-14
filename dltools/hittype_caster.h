@@ -10,13 +10,22 @@
 #include "hittype.h"
 
 
+namespace dltools { namespace imported {
+    auto Row = pybind11::module::import("pyspark.sql").attr("Row");
+}}
+
+
 namespace pybind11 { namespace detail {
     template<> struct type_caster<dltools::AnalyzedHit> {
         bool load(handle src, bool convert) {
-            if (not isinstance<dict>(src)) {
+            dict d;
+            if (isinstance<dict>(src)) {
+                d = reinterpret_borrow<dict>(src);
+            } else if (isinstance(src, dltools::imported::Row)) {
+                d = reinterpret_borrow<dict>(src.attr("asDict")(true));
+            } else {
                 return false;
             }
-            auto d = reinterpret_borrow<dict>(src);
             {  // pz
                 make_caster<double> v;
                 if (not(d.contains("pz") and v.load(d["pz"].ptr(), convert))) {
@@ -89,10 +98,14 @@ namespace pybind11 { namespace detail {
 
     template<> struct type_caster<dltools::Hit> {
         bool load(handle src, bool convert) {
-            if (not isinstance<dict>(src)) {
+            dict d;
+            if (isinstance<dict>(src)) {
+                d = reinterpret_borrow<dict>(src);
+            } else if (isinstance(src, dltools::imported::Row)) {
+                d = reinterpret_borrow<dict>(src.attr("asDict")(true));
+            } else {
                 return false;
             }
-            auto d = reinterpret_borrow<dict>(src);
             {  // t
                 make_caster<double> v;
                 if (not(d.contains("t") and v.load(d["t"].ptr(), convert))) {
@@ -198,10 +211,14 @@ namespace pybind11 { namespace detail {
 
     template<> struct type_caster<dltools::CombinedHit> {
         bool load(handle src, bool convert) {
-            if (not isinstance<dict>(src)) {
+            dict d;
+            if (isinstance<dict>(src)) {
+                d = reinterpret_borrow<dict>(src);
+            } else if (isinstance(src, dltools::imported::Row)) {
+                d = reinterpret_borrow<dict>(src.attr("asDict")(true));
+            } else {
                 return false;
             }
-            auto d = reinterpret_borrow<dict>(src);
             {  // comb
                 make_caster<std::vector<dltools::Hit>> v;
                 if (not(d.contains("comb") and v.load(d["comb"].ptr(), convert))) {
