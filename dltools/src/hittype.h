@@ -51,7 +51,7 @@ namespace dltools {
     typedef std::vector<Hit> Hits;
 
 
-    // TODO Add document
+    // TODO: Add document
     Hits zip_to_hits(std::vector<double> t, std::vector<double> x, std::vector<double> y);
     Hits zip_to_hits(std::vector<double> t, std::vector<double> x, std::vector<double> y, std::vector<int> flag);
 
@@ -67,17 +67,17 @@ namespace dltools {
     typedef std::vector<CombinedHit> CombinedHits;
 
 
-    // TODO Add document
+    // TODO: Add document
     CombinedHits combine(Hits hits, int r);
     CombinedHits combine(Hits hits, int r, const std::unordered_set<std::string> &white_list);
 
-    // TODO Add document
+    // TODO: Add document
     CombinedHit as_minsqsum(CombinedHit hit);
     CombinedHit as_minsqsum(CombinedHit hit, const std::unordered_set<std::string> &white_list);
     CombinedHits as_minsqsum(CombinedHits hits);
     CombinedHits as_minsqsum(CombinedHits hits, const std::unordered_set<std::string> &white_list);
 
-    // TODO Add document
+    // TODO: Add document
     CombinedHits filter_duphits(CombinedHits hits);
 }
 
