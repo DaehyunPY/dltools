@@ -4,7 +4,7 @@
 
 #include <math.h>
 #include <algorithm>
-#include "sacla_model.h"
+#include "model.h"
 
 
 using std::move;

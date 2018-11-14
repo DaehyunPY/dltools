@@ -15,10 +15,10 @@ ext_modules = [
     Extension(
         'dltools.sacla.model',
         [
-            'dltools/src/sacla_model_binder.cpp',
-            'dltools/src/sacla_model_pickler.cpp',
-            'dltools/src/sacla_model.cpp',
-            'dltools/src/hittype.cpp',
+            'dltools/sacla/model_binder.cpp',
+            'dltools/sacla/model_pickler.cpp',
+            'dltools/sacla/model.cpp',
+            'dltools/hittype.cpp',
         ],
         include_dirs=[
             *([pybind11.get_include(),
@@ -36,8 +36,8 @@ ext_modules = [
     Extension(
         'dltools.hittype',
         [
-            'dltools/src/hittype_binder.cpp',
-            'dltools/src/hittype.cpp',
+            'dltools/hittype_binder.cpp',
+            'dltools/hittype.cpp',
         ],
         include_dirs=[
             *([pybind11.get_include(),

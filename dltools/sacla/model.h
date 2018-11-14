@@ -12,7 +12,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
-#include "hittype.h"
+#include "../hittype.h"
 
 
 namespace dltools { namespace sacla {

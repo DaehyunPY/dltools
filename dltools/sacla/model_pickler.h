@@ -8,7 +8,7 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include "sacla_model.h"
+#include "model.h"
 
 
 namespace dltools { namespace sacla {
