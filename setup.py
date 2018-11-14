@@ -69,7 +69,7 @@ ext_modules = [
 
 setup(
     name='dltools',
-    version='v201811.4',
+    version='v201811.5',
     author='Daehyun You',
     author_email='daehyun@dc.tohoku.ac.jp',
     url='https://github.com/DaehyunPY/dltools',
@@ -86,5 +86,4 @@ setup(
         'pyspark',
         'cytoolz',
     ],
-    zip_safe=False,
 )
