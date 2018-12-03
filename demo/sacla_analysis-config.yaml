@@ -8,8 +8,8 @@ target_files:
 
 # Parameters of SACLA momentum models (momentum analyzer). Hit (t, x, y)
 # will be calibrated to...
-#   t -> t - t0,
-#   (x, y) -> (((x, y) * rot(th) - (x0, y0)) * (dx, dy)) + (x1, y1).
+#     (t) -> (t - t0),
+#     (x, y) -> ((x, y) * rot(th) - (x0, y0)) * (dx, dy).
 momentum_analyzer:
   t0: 626.6  # A calibration factor. Default: 0.
   th: 0  # A calibration factor. Default: 0.
@@ -21,18 +21,18 @@ momentum_analyzer:
     particle_a:
       # Mass of the model particle. This parameter will be used to
       # calculate kinetic energy from three-dimensional momentum...
-      #   (px, py, pz) -> (px**2 + py**2 + pz**2) / 2 / mass.
+      #     (px, py, pz) -> (px**2 + py**2 + pz**2) / 2 / mass.
       # This program does not consider units. You may want to
       # convert the unit of kinetic energy implictly, here.
       # For instance, if the mass of a target particle is *m* u,
       # and you may like to get kinetic energy in eV from au units of
       # momentum values, then the mass parameter has to be:
-      #   m -> m * 1822.888486192 / 27.21138602.
+      #     m -> m * 1822.888486192 / 27.21138602.
       mass: 8501.3198901104  # = 126.90447 u.
       # Coefficients of momentum model in the z direction:
-      #   (t, r) -> coeffs[0] + coeffs[1] * t + coeffs[2] * t ** 2
-      #             + coeffs[3] * t ** 3 + coeffs[4] * t ** 4
-      #             + coeffs[5] * r ** 2 + coeffs[6] * r ** 4.
+      #     (t, r) -> coeffs[0] + coeffs[1] * t + coeffs[2] * t ** 2
+      #               + coeffs[3] * t ** 3 + coeffs[4] * t ** 4
+      #               + coeffs[5] * r ** 2 + coeffs[6] * r ** 4.
       pz_coeffs:
         - 26824.7
         - -14.2786
@@ -42,9 +42,9 @@ momentum_analyzer:
         - -0.0462857
         - 1.99704e-006
       # Coefficients of momentum model in the r direction:
-      #   (t, r) -> coeffs[0] * r + coeffs[1] * r * t
-      #             + coeffs[2] * r ** 3 * t + coeffs[3] * r ** 5 * t
-      #             + coeffs[4] * t ** 3 + coeffs[5] * t ** 5.
+      #     (t, r) -> coeffs[0] * r + coeffs[1] * r * t
+      #               + coeffs[2] * r ** 3 * t + coeffs[3] * r ** 5 * t
+      #               + coeffs[4] * t ** 3 + coeffs[5] * t ** 5.
       pr_coeffs:
         - 22.5668
         - -0.00087779
@@ -52,10 +52,8 @@ momentum_analyzer:
         - -2.76085e-012
         - 4.22634e-011
         - -1.98336e-018
-      fr: 4561.4  # Lower limit of flight time. Default: 0.
-      to: 4726.4  # Upper limit of flight time. Default: .inf.
-      x1: 0  # A calibration factor. Default: 0.
-      y1: 0  # A calibration factor. Default: 0.
+      fr: 5188  # Lower limit of flight time. Default: 0.
+      to: 5353  # Upper limit of flight time. Default: .inf.
     particle_b:
       # Mass of the model particle. This parameter will be used to
       # calculate kinetic energy from three-dimensional momentum...
@@ -65,12 +63,12 @@ momentum_analyzer:
       # For instance, if the mass of a target particle is *m* u,
       # and you may like to get kinetic energy in eV from au units of
       # momentum values, then the mass parameter has to be:
-      #   m -> m * 1822.888486192 / 27.21138602.
+      #     m -> m * 1822.888486192 / 27.21138602.
       mass: 8501.3198901104  # = 126.90447 u.
       # Coefficients of momentum model in the z direction:
-      #   (t, r) -> coeffs[0] + coeffs[1] * t + coeffs[2] * t ** 2
-      #             + coeffs[3] * t ** 3 + coeffs[4] * t ** 4
-      #             + coeffs[5] * r ** 2 + coeffs[6] * r ** 4.
+      #     (t, r) -> coeffs[0] + coeffs[1] * t + coeffs[2] * t ** 2
+      #               + coeffs[3] * t ** 3 + coeffs[4] * t ** 4
+      #               + coeffs[5] * r ** 2 + coeffs[6] * r ** 4.
       pz_coeffs:
         - 40184.2
         - -29.9173
@@ -80,9 +78,9 @@ momentum_analyzer:
         - -0.0651582
         - 3.60176e-006
       # Coefficients of momentum model in the r direction:
-      #   (t, r) -> coeffs[0] * r + coeffs[1] * r * t
-      #             + coeffs[2] * r ** 3 * t + coeffs[3] * r ** 5 * t
-      #             + coeffs[4] * t ** 3 + coeffs[5] * t ** 5.
+      #     (t, r) -> coeffs[0] * r + coeffs[1] * r * t
+      #               + coeffs[2] * r ** 3 * t + coeffs[3] * r ** 5 * t
+      #               + coeffs[4] * t ** 3 + coeffs[5] * t ** 5.
       pr_coeffs:
         - 28.1502
         - -0.000583398
@@ -90,7 +88,5 @@ momentum_analyzer:
         - 7.28141e-012
         - 6.32684e-010
         - -5.92671e-017
-      fr: 3221.4  # Lower limit of flight time. Default: 0.
-      to: 3373.4  # Upper limit of flight time. Default: .inf.
-      x1: 0  # A calibration factor. Default: 0.
-      y1: 0  # A calibration factor. Default: 0.
+      fr: 3848  # Lower limit of flight time. Default: 0.
+      to: 4000  # Upper limit of flight time. Default: .inf.

@@ -25,7 +25,6 @@ def restructure(df: DataFrame) -> DataFrame:
 
 def load_analyzer(config: dict) -> Column:
     model = Models(
-        models={k: Model(**m) for k, m in config.pop("models").items()},
-        **config,
+        {k: Model(**config, **m) for k, m in config.pop("models").items()},
     )
     return udf(model, SpkHits)
