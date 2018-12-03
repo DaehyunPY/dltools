@@ -69,7 +69,7 @@ ext_modules = [
 
 setup(
     name='dltools',
-    version='v201811.5',
+    version='v201812.0',
     author='Daehyun You',
     author_email='daehyun@dc.tohoku.ac.jp',
     url='https://github.com/DaehyunPY/dltools',
