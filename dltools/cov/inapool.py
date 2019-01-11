@@ -18,6 +18,20 @@ def cov11_inapool(
         key0: str,
         key1: typing.Optional[str] = None,
         ) -> typing.Callable[..., dict]:
+    """
+    Examples
+    --------
+    Typical use for TOF covariant with certain TOF region:
+
+    >>> tof = cov11_inapool(
+    ...     df.select(f.col("hits.t").alias("t")),
+    ...     "t",
+    ... )
+    >>> tof(
+    ...     fr0=1000, to0=6000, nbins0=2000,
+    ...     fr1=5200, to1=5400,
+    ... )["Cov[X,Y]"][..., 0]
+    """
     if key1 is None:
         key1 = key0
 
@@ -97,6 +111,22 @@ def cov21_inapool(
         key01: str,
         key1: typing.Optional[str] = None,
         ) -> typing.Callable[..., dict]:
+    """
+    Examples
+    --------
+    Typical use for Fish covariant with certain TOF region:
+
+    >>> fish = cov21_inapool(
+    ...     df.select(f.col("hits.t").alias("t"),
+    ...               f.col("hits.y").alias("y")),
+    ...     "t", "y",
+    ... )
+    >>> fish(
+    ...     fr00=1000, to00=6000, nbins00=2000,
+    ...     fr01=-50, to01=50, nbins01=100,
+    ...     fr1=5200, to1=5400,
+    ... )["Cov[X,Y]"][..., 0]
+    """
     if key1 is None:
         key1 = key00
 
@@ -185,6 +215,20 @@ def cov111_inapool(
         key1: typing.Optional[str] = None,
         key2: typing.Optional[str] = None,
         ) -> typing.Callable[..., dict]:
+    """
+    Examples
+    --------
+    Typical use for PIPICO covariant with certain TOF region:
+
+    >>> pipico = cov111_inapool(
+    ...     df.select(f.col("hits.t").alias("t")),
+    ...     "t",
+    ... )
+    >>> pipico(
+    ...     fr0=1000, to0=6000, nbins0=500, nbins1=500,
+    ...     fr2=5200, to2=5400,
+    ... )["Cov[X,Y,Z]"][..., 0]
+    """
     if key1 is None:
         key1 = key0
 
@@ -314,6 +358,23 @@ def cov211_inapool(
         key1: typing.Optional[str] = None,
         key2: typing.Optional[str] = None,
         ) -> typing.Callable[..., dict]:
+    """
+    Examples
+    --------
+    Typical use for Fish covariant with certain TOF region:
+
+    >>> fish = cov211_inapool(
+    ...     df.select(f.col("hits.t").alias("t"),
+    ...               f.col("hits.y").alias("y")),
+    ...     "t", "y",
+    ... )
+    >>> fish(
+    ...     fr00=1000, to00=6000, nbins00=2000,
+    ...     fr01=-50, to01=50, nbins01=100,
+    ...     fr1=3800, to1=4000,
+    ...     fr2=5200, to2=5400,
+    ... )["Cov[X,Y,Z]"][..., 0, 0]
+    """
     if key1 is None:
         key1 = key00
 

@@ -17,6 +17,17 @@ def cov11_simple(
         df: pyspark.sql.DataFrame,
         key: str,
         ) -> typing.Callable[..., dict]:
+    """
+    Examples
+    --------
+    Typical use for PIPICO:
+
+    >>> pipico = cov11_simple(
+    ...     df.select(f.col("hits.t").alias("t")),
+    ...     "t",
+    ... )
+    >>> pipico(fr=1000, to=6000, nbins=500)["Cov[X,Y]"]
+    """
 
     @lru_cache()
     def analyzer(fr: float, to: float, nbins: int) -> dict:
@@ -66,6 +77,17 @@ def cov111_simple(
         df: pyspark.sql.DataFrame,
         key: str,
         ) -> typing.Callable[..., dict]:
+    """
+    Examples
+    --------
+    Typical use for 3PICO:
+
+    >>> threepico = cov111_simple(
+    ...     df.select(f.col("hits.t").alias("t")),
+    ...     "t",
+    ... )
+    >>> threepico(fr=2000, to=6000, nbins=200)["Cov[X,Y,Z]"]
+    """
 
     @lru_cache()
     def analyzer(fr: float, to: float, nbins: int) -> dict:
