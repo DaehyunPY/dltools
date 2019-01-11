@@ -80,8 +80,10 @@ setup(
     packages=[
         'dltools',
         'dltools.sacla',
+        'dltools.cov',
     ],
     install_requires=[
+        'numba',
         'numpy',
         'pyspark',
         'cytoolz',
