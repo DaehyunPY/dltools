@@ -34,7 +34,10 @@ def cov11_inapool(
             )
             x0 = [
                 {"arg": arg, "at": at - 1}
-                for arg, at in zip(target["args"], target["digitized"])
+                for (arg,), at in zip(
+                    np.argwhere(target["where"]),
+                    target["digitized"][target["where"]],
+                )
             ]
 
             target = digitize(
@@ -43,7 +46,10 @@ def cov11_inapool(
             )
             x1 = [
                 {"arg": arg, "at": at - 1}
-                for arg, at in zip(target["args"], target["digitized"])
+                for (arg,), at in zip(
+                    np.argwhere(target["where"]),
+                    target["digitized"][target["where"]],
+                )
             ]
 
             yield (0, 0)
@@ -111,7 +117,10 @@ def cov111_inapool(
             )
             x0 = [
                 {"arg": arg, "at": at - 1}
-                for arg, at in zip(target["args"], target["digitized"])
+                for (arg,), at in zip(
+                    np.argwhere(target["where"]),
+                    target["digitized"][target["where"]],
+                )
             ]
 
             target = digitize(
@@ -120,7 +129,10 @@ def cov111_inapool(
             )
             x1 = [
                 {"arg": arg, "at": at - 1}
-                for arg, at in zip(target["args"], target["digitized"])
+                for (arg,), at in zip(
+                    np.argwhere(target["where"]),
+                    target["digitized"][target["where"]],
+                )
             ]
 
             target = digitize(
@@ -129,7 +141,10 @@ def cov111_inapool(
             )
             x2 = [
                 {"arg": arg, "at": at - 1}
-                for arg, at in zip(target["args"], target["digitized"])
+                for (arg,), at in zip(
+                    np.argwhere(target["where"]),
+                    target["digitized"][target["where"]],
+                )
             ]
 
             yield (0, 0, 0)

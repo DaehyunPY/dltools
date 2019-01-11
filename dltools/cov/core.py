@@ -17,8 +17,8 @@ def digitize(
     digitized = np.digitize(arr, bins=bins)
     where = (0 < digitized) & (digitized < m)
     return {
-        "args": np.arange(n)[where],
-        "digitized": digitized[where],
+        "digitized": digitized,
+        "where": where,
     }
 
 

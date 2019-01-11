@@ -28,7 +28,10 @@ def cov11_simple(
             )
             x = [
                 {"arg": arg, "at": at - 1}
-                for arg, at in zip(target["args"], target["digitized"])
+                for (arg,), at in zip(
+                    np.argwhere(target["where"]),
+                    target["digitized"][target["where"]],
+                )
             ]
 
             yield (0, 0)
@@ -40,7 +43,7 @@ def cov11_simple(
                 if len({d0["arg"], d1["arg"]}) != 2:
                     continue
                 yield (d0["at"] + 1, d1["at"] + 1)
-                
+
         reduced = (
             df
             .rdd
@@ -74,7 +77,10 @@ def cov111_simple(
             )
             x = [
                 {"arg": arg, "at": at - 1}
-                for arg, at in zip(target["args"], target["digitized"])
+                for (arg,), at in zip(
+                    np.argwhere(target["where"]),
+                    target["digitized"][target["where"]],
+                )
             ]
 
             yield (0, 0, 0)
@@ -86,7 +92,7 @@ def cov111_simple(
                 if len({d0["arg"], d1["arg"]}) != 2:
                     continue
                 yield (d0["at"] + 1, d1["at"] + 1, 0)
-                
+
             for d0, d1, d2 in product(x, repeat=3):
                 if len({d0["arg"], d1["arg"], d2["arg"]}) != 3:
                     continue
@@ -108,7 +114,8 @@ def cov111_simple(
                 "Sum[X]": reduced[1:, 0, 0],
                 "Sum[XY]": reduced[1:, 1:, 0],
                 "Sum[XYZ]": reduced[1:, 1:, 1:],
-            } | ReferTo("Sum[X]", "Sum[Y]", "Sum[Z]") | ReferTo("Sum[XY]", "Sum[XZ]", "Sum[YZ]")
+            } | ReferTo("Sum[X]", "Sum[Y]", "Sum[Z]")
+            | ReferTo("Sum[XY]", "Sum[XZ]", "Sum[YZ]")
             | AppendCov("X", "Y") | ReferTo("Cov[X,Y]", "Cov[X,Z]", "Cov[Y,Z]")
             | AppendCov("X", "Y", "Z")
         )
