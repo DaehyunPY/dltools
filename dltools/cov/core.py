@@ -5,7 +5,7 @@ import numpy as np
 
 
 __all__ = [
-    "digitize", "increase", "AppendCov", "ReferTo",
+    "digitize", "increase", "ReferTo", "AppendCov",
 ]
 
 
@@ -26,6 +26,21 @@ def digitize(
 def increase(counter: np.ndarray, at: tuple) -> np.ndarray:
     counter[at] += 1
     return counter
+
+
+class ReferTo:
+    def __init__(self, ref: str, *keys: str):
+        self.__ref, self.__keys = ref, keys
+
+    def __call__(self, d: dict) -> dict:
+        ref, keys = self.__ref, self.__keys
+        return {
+            **{k: d[ref] for k in keys},
+            **d,
+        }
+
+    def __ror__(self, other: dict) -> dict:
+        return self(other)
 
 
 class AppendCov:
@@ -67,21 +82,6 @@ class AppendCov:
                 ),
                 **d,
             }
-
-    def __ror__(self, other: dict) -> dict:
-        return self(other)
-
-
-class ReferTo:
-    def __init__(self, ref: str, *keys: str):
-        self.__ref, self.__keys = ref, keys
-
-    def __call__(self, d: dict) -> dict:
-        ref, keys = self.__ref, self.__keys
-        return {
-            **{k: d[ref] for k in keys},
-            **d,
-        }
 
     def __ror__(self, other: dict) -> dict:
         return self(other)
