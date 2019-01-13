@@ -9,11 +9,11 @@ from .core import digitize, increase, AppendCov
 
 
 __all__ = [
-    "cov11_inapool", "cov21_inapool", "cov111_inapool", "cov211_inapool",
+    "cov11", "cov21", "cov111", "cov211",
 ]
 
 
-def cov11_inapool(
+def cov11(
         df: pyspark.sql.DataFrame,
         key0: str,
         key1: typing.Optional[str] = None,
@@ -23,7 +23,7 @@ def cov11_inapool(
     --------
     Typical use for TOF covariant with certain TOF region:
 
-    >>> tof = cov11_inapool(
+    >>> tof = cov11(
     ...     df.select(f.col("hits.t").alias("t")),
     ...     "t",
     ... )
@@ -105,7 +105,7 @@ def cov11_inapool(
     return analyzer
 
 
-def cov21_inapool(
+def cov21(
         df: pyspark.sql.DataFrame,
         key00: str,
         key01: str,
@@ -116,7 +116,7 @@ def cov21_inapool(
     --------
     Typical use for Fish covariant with certain TOF region:
 
-    >>> fish = cov21_inapool(
+    >>> fish = cov21(
     ...     df.select(f.col("hits.t").alias("t"),
     ...               f.col("hits.y").alias("y")),
     ...     "t", "y",
@@ -209,7 +209,7 @@ def cov21_inapool(
     return analyzer
 
 
-def cov111_inapool(
+def cov111(
         df: pyspark.sql.DataFrame,
         key0: str,
         key1: typing.Optional[str] = None,
@@ -220,7 +220,7 @@ def cov111_inapool(
     --------
     Typical use for PIPICO covariant with certain TOF region:
 
-    >>> pipico = cov111_inapool(
+    >>> pipico = cov111(
     ...     df.select(f.col("hits.t").alias("t")),
     ...     "t",
     ... )
@@ -351,7 +351,7 @@ def cov111_inapool(
     return analyzer
 
 
-def cov211_inapool(
+def cov211(
         df: pyspark.sql.DataFrame,
         key00: str,
         key01: str,
@@ -363,7 +363,7 @@ def cov211_inapool(
     --------
     Typical use for Fish covariant with certain TOF region:
 
-    >>> fish = cov211_inapool(
+    >>> fish = cov211(
     ...     df.select(f.col("hits.t").alias("t"),
     ...               f.col("hits.y").alias("y")),
     ...     "t", "y",

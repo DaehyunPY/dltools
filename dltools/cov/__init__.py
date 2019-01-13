@@ -6,7 +6,7 @@ from .generic import *
 
 __all__ = [
     "cov11_simple", "cov111_simple",
-    "cov11_inapool", "cov21_inapool", "cov111_inapool", "cov211_inapool",
-    "cov1x11_inpools", "cov2x11_inpools",
-    "cov11_generic", "cov21_generic", "cov111_generic", "cov211_generic",
+    "cov11", "cov21", "cov111", "cov211",
+    "cov1x11", "cov2x11",
+    "cov1x1", "cov2x1", "cov1x1x1", "cov2x1x1",
 ]

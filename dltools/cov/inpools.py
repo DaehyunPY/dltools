@@ -9,11 +9,11 @@ from .core import digitize, increase, AppendCov
 
 
 __all__ = [
-    "cov1x11_inpools", "cov2x11_inpools",
+    "cov1x11", "cov2x11",
 ]
 
 
-def cov1x11_inpools(
+def cov1x11(
         df: pyspark.sql.DataFrame,
         key0: str,
         key1: typing.Optional[str] = None,
@@ -136,7 +136,7 @@ def cov1x11_inpools(
     return analyzer
 
 
-def cov2x11_inpools(
+def cov2x11(
         df: pyspark.sql.DataFrame,
         key00: str,
         key01: str,

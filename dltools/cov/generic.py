@@ -9,11 +9,11 @@ from .core import digitize, increase, AppendCov
 
 
 __all__ = [
-    "cov11_generic", "cov21_generic", "cov111_generic", "cov211_generic",
+    "cov1x1", "cov2x1", "cov1x1x1", "cov2x1x1",
 ]
 
 
-def cov11_generic(
+def cov1x1(
         df: pyspark.sql.DataFrame,
         key0: str,
         key1: typing.Optional[str] = None,
@@ -84,7 +84,7 @@ def cov11_generic(
     return analyzer
 
 
-def cov21_generic(
+def cov2x1(
         df: pyspark.sql.DataFrame,
         key00: str,
         key01: str,
@@ -165,7 +165,7 @@ def cov21_generic(
     return analyzer
 
 
-def cov111_generic(
+def cov1x1x1(
         df: pyspark.sql.DataFrame,
         key0: str,
         key1: typing.Optional[str] = None,
@@ -278,7 +278,7 @@ def cov111_generic(
     return analyzer
 
 
-def cov211_generic(
+def cov2x1x1(
         df: pyspark.sql.DataFrame,
         key00: str,
         key01: str,
