@@ -22,6 +22,8 @@ def cov11_simple(
     --------
     Typical use for PIPICO:
 
+    >>> import pyspark.sql.functions as f
+    >>> df: pyspark.sql.DataFrame
     >>> pipico = cov11_simple(
     ...     df.select(f.col("hits.t").alias("t")),
     ...     "t",
@@ -82,6 +84,8 @@ def cov111_simple(
     --------
     Typical use for 3PICO:
 
+    >>> import pyspark.sql.functions as f
+    >>> df: pyspark.sql.DataFrame
     >>> threepico = cov111_simple(
     ...     df.select(f.col("hits.t").alias("t")),
     ...     "t",

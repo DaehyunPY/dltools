@@ -23,6 +23,8 @@ def cov11(
     --------
     Typical use for TOF covariant with certain TOF region:
 
+    >>> import pyspark.sql.functions as f
+    >>> df: pyspark.sql.DataFrame
     >>> tof = cov11(
     ...     df.select(f.col("hits.t").alias("t")),
     ...     "t",
@@ -116,6 +118,8 @@ def cov21(
     --------
     Typical use for Fish covariant with certain TOF region:
 
+    >>> import pyspark.sql.functions as f
+    >>> df: pyspark.sql.DataFrame
     >>> fish = cov21(
     ...     df.select(f.col("hits.t").alias("t"),
     ...               f.col("hits.y").alias("y")),
@@ -220,6 +224,8 @@ def cov111(
     --------
     Typical use for PIPICO covariant with certain TOF region:
 
+    >>> import pyspark.sql.functions as f
+    >>> df: pyspark.sql.DataFrame
     >>> pipico = cov111(
     ...     df.select(f.col("hits.t").alias("t")),
     ...     "t",
@@ -363,6 +369,8 @@ def cov211(
     --------
     Typical use for Fish covariant with certain TOF region:
 
+    >>> import pyspark.sql.functions as f
+    >>> df: pyspark.sql.DataFrame
     >>> fish = cov211(
     ...     df.select(f.col("hits.t").alias("t"),
     ...               f.col("hits.y").alias("y")),
