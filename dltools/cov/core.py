@@ -1,13 +1,15 @@
 import typing
+from functools import reduce
 
 import pyspark
+import pyspark.sql.functions as f
 from numba import jit
 import numpy as np
 
 
 __all__ = [
     "digitize", "increase",
-    "SpkPersist", "SpkRepart", "SpkCoalesce", "SpkMapPartThanSum",
+    "SpkPersist", "SpkRepart", "SpkMapPartThanSum", "SpkCrossJoin",
     "ReferTo", "AppendCov", "AppendCCov",
 ]
 
@@ -32,7 +34,7 @@ def increase(counter: np.ndarray, at: tuple) -> np.ndarray:
 
 
 class SpkPersist:
-    def __init__(self, on: bool = True, opt: str = "MEMORY_AND_DISK"):
+    def __init__(self, where: typing.Optional[str] = "MEMORY_AND_DISK"):
         options = {
             "DISK_ONLY": pyspark.StorageLevel.DISK_ONLY,
             "DISK_ONLY_2": pyspark.StorageLevel.DISK_ONLY_2,
@@ -43,16 +45,17 @@ class SpkPersist:
             "OFF_HEAP": pyspark.StorageLevel.OFF_HEAP,
         }
 
-        if opt not in options:
-            raise ValueError(f'Argument "opt" has to be one of {", ".join(options)}!')
-
-        self.__on = on
-        self.__opt = options[opt]
+        if not (where is None or where in options):
+            raise ValueError(
+                f'Argument "on" (passed as "{where}") has to be '
+                f'None or one of {", ".join(options)}!',
+            )
+        self.__where = None if where is None else options[where]
 
     def __call__(self, df: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
-        if self.__on:
-            return df.persist(self.__opt)
-        return df
+        if self.__where is None:
+            return df
+        return df.persist(self.__where)
 
     def __ror__(self, other: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
         return self(other)
@@ -72,15 +75,41 @@ class SpkRepart:
         return self(other)
 
 
-class SpkCoalesce:
-    def __init__(self, npart: typing.Optional[int] = None):
+class SpkCrossJoin:
+    def __init__(
+            self,
+            *columns: str,
+            fraction: typing.Optional[float] = None,
+            npart: typing.Optional[int] = None,
+            ):
+        if len(columns) == 0:
+            raise ValueError('Argument "columns" must have at least one element!')
+
+        self.__columns = columns
+        self.__fraction = None if fraction is None else float(fraction)
         self.__npart = npart
 
-    def __call__(self, df: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
-        npart = self.__npart
-        if npart is None:
+    def __sampled(self, df: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
+        if self.__fraction is None:
             return df
-        return df.coalesce(npart)
+        return df.sample(False, self.__fraction)
+
+    def __selected(self,
+            df: pyspark.sql.DataFrame,
+            ) -> typing.Iterable[pyspark.sql.DataFrame]:
+        for c in self.__columns:
+            yield (
+                self
+                .__sampled(df)
+                .select(f.explode(f"h.{c}").alias("h"))
+                .select("h.*")
+            )
+
+    def __call__(self, df: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
+        ret = reduce(pyspark.sql.DataFrame.crossJoin, self.__selected(df))
+        if self.__npart is None:
+            return ret
+        return ret.coalesce(self.__npart)
 
     def __ror__(self, other: pyspark.sql.DataFrame) -> pyspark.sql.DataFrame:
         return self(other)

@@ -8,7 +8,10 @@ from pyspark.sql import functions as f
 from pyspark.sql.types import ArrayType, StructField, StructType
 
 from dltools import SpkHit
-from .core import SpkPersist, SpkRepart, SpkCoalesce, SpkMapPartThanSum, AppendCCov
+from .core import (
+    SpkPersist, SpkRepart, SpkMapPartThanSum, SpkCrossJoin,
+    AppendCCov,
+)
 
 
 __all__ = [
@@ -21,12 +24,19 @@ def cov2d_complicated(
         ishit0: typing.Callable[[pyspark.sql.Row], bool],
         ishit1: typing.Optional[typing.Callable[[pyspark.sql.Row], bool]] = None,
         key: str = "hits",
-        persist_opt: str = "MEMORY_AND_DISK",
-        npart_crossjoin: typing.Optional[int] = None,
-        npart_hist: typing.Optional[int] = None,
+        npart: typing.Optional[int] = None,
+        persist: typing.Optional[str] = "MEMORY_AND_DISK",
+        opt1: typing.Optional[dict] = None,
+        opt2: typing.Optional[dict] = None,
         ) -> typing.Callable[..., dict]:
     if ishit1 is None:
         ishit1 = ishit0
+
+    if opt1 is None:
+        opt1 = {}
+
+    if opt2 is None:
+        opt2 = {}
 
     @f.udf(StructType([
         StructField("X", ArrayType(StructType([
@@ -72,8 +82,8 @@ def cov2d_complicated(
     combined = (
         df
         .select(combine(key).alias("h"))
-        | SpkRepart(npart_crossjoin)
-        | SpkPersist(opt=persist_opt)
+        | SpkRepart(npart)
+        | SpkPersist(persist)
     )
 
     @lru_cache()
@@ -87,23 +97,14 @@ def cov2d_complicated(
             "N": df.count(),
             "Sum[X]Sum[Y]": (
                 combined
-                .select(f.explode("h.X").alias("h"))
-                .select("h.*")
-                .crossJoin(
-                    combined
-                    .select(f.explode("h.Y").alias("h"))
-                    .select("h.*")
-                )
-                | SpkCoalesce(npart_hist)
+                | SpkCrossJoin("X", "Y", **opt2)
                 | SpkMapPartThanSum(hist)
-            ),
+            ) * (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
             "Sum[XY]": (
                 combined
-                .select(f.explode("h.XY").alias("h"))
-                .select("h.*")
-                | SpkCoalesce(npart_hist)
+                | SpkCrossJoin("XY", **opt1)
                 | SpkMapPartThanSum(hist)
-            ),
+            ) * (1 / opt1["fraction"] if "fraction" in opt1 else 1),
         } | AppendCCov("X", "Y")
     return analyzer
 
@@ -114,15 +115,26 @@ def cov3d_complicated(
         ishit1: typing.Optional[typing.Callable[[pyspark.sql.Row], bool]] = None,
         ishit2: typing.Optional[typing.Callable[[pyspark.sql.Row], bool]] = None,
         key: str = "hits",
-        persist_opt: str = "MEMORY_AND_DISK",
-        npart_crossjoin: typing.Optional[int] = None,
-        npart_hist: typing.Optional[int] = None,
+        npart: typing.Optional[int] = None,
+        persist: typing.Optional[str] = "MEMORY_AND_DISK",
+        opt1: typing.Optional[dict] = None,
+        opt2: typing.Optional[dict] = None,
+        opt3: typing.Optional[dict] = None,
         ) -> typing.Callable[..., dict]:
     if ishit1 is None:
         ishit1 = ishit0
 
     if ishit2 is None:
         ishit2 = ishit1
+
+    if opt1 is None:
+        opt1 = {}
+
+    if opt2 is None:
+        opt2 = {}
+
+    if opt3 is None:
+        opt3 = {}
 
     @f.udf(StructType([
         StructField("X", ArrayType(StructType([
@@ -208,8 +220,8 @@ def cov3d_complicated(
     combined = (
         df
         .select(combine(key).alias("h"))
-        | SpkRepart(npart_crossjoin)
-        | SpkPersist(opt=persist_opt)
+        | SpkRepart(npart)
+        | SpkPersist(persist)
     )
 
     @lru_cache()
@@ -223,63 +235,28 @@ def cov3d_complicated(
             "N": df.count(),
             "Sum[X]Sum[Y]Sum[Z]": (
                 combined
-                .select(f.explode("h.X").alias("h"))
-                .select("h.*")
-                .crossJoin(
-                    combined
-                    .select(f.explode("h.Y").alias("h"))
-                    .select("h.*")
-                )
-                .crossJoin(
-                    combined
-                    .select(f.explode("h.Z").alias("h"))
-                    .select("h.*")
-                )
-                | SpkCoalesce(npart_hist)
+                | SpkCrossJoin("X", "Y", "Z", **opt3)
                 | SpkMapPartThanSum(hist)
-            ),
+            ) * (1 / opt3["fraction"] if "fraction" in opt3 else 1) ** 3,
             "Sum[XY]Sum[Z]": (
                 combined
-                .select(f.explode("h.XY").alias("h"))
-                .select("h.*")
-                .crossJoin(
-                    combined
-                    .select(f.explode("h.Z").alias("h"))
-                    .select("h.*")
-                )
-                | SpkCoalesce(npart_hist)
+                | SpkCrossJoin("XY", "Z", **opt2)
                 | SpkMapPartThanSum(hist)
-            ),
+            ) * (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
             "Sum[XZ]Sum[Y]": (
                 combined
-                .select(f.explode("h.XZ").alias("h"))
-                .select("h.*")
-                .crossJoin(
-                    combined
-                    .select(f.explode("h.Y").alias("h"))
-                    .select("h.*")
-                )
-                | SpkCoalesce(npart_hist)
+                | SpkCrossJoin("XZ", "Y", **opt2)
                 | SpkMapPartThanSum(hist)
-            ),
+            ) * (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
             "Sum[YZ]Sum[X]": (
                 combined
-                .select(f.explode("h.YZ").alias("h"))
-                .select("h.*")
-                .crossJoin(
-                    combined
-                    .select(f.explode("h.X").alias("h"))
-                    .select("h.*")
-                )
-                | SpkCoalesce(npart_hist)
+                | SpkCrossJoin("YZ", "X", **opt2)
                 | SpkMapPartThanSum(hist)
-            ),
+            ) * (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
             "Sum[XYZ]": (
                 combined
-                .select(f.explode("h.XYZ").alias("h"))
-                .select("h.*")
-                | SpkCoalesce(npart_hist)
+                | SpkCrossJoin("XYZ", **opt1)
                 | SpkMapPartThanSum(hist)
-            ),
+            ) * (1 / opt1["fraction"] if "fraction" in opt1 else 1),
         } | AppendCCov("X", "Y", "Z")
     return analyzer
