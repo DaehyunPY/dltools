@@ -1,5 +1,5 @@
 #!/bin/bash
-dir=$(realpath "$(dirname $0)")
+dir="$(pwd)"
 
 docker run \
 	--rm \
