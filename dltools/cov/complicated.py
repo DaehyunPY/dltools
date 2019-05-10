@@ -12,6 +12,7 @@ from .core import (
     SpkPersist, SpkRepart, SpkMapPartThanSum, SpkCrossJoin,
     AppendCCov,
 )
+from .markup import markup
 
 
 __all__ = [
@@ -95,16 +96,18 @@ def cov2d_complicated(
             ) -> dict:
         return {
             "N": df.count(),
-            "Sum[X]Sum[Y]": (
+            "Sum[X]Sum[Y]": markup(
                 combined
                 | SpkCrossJoin("X", "Y", **opt2)
-                | SpkMapPartThanSum(hist)
-            ) * (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
-            "Sum[XY]": (
+                | SpkMapPartThanSum(hist),
+                (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
+            ),
+            "Sum[XY]": markup(
                 combined
                 | SpkCrossJoin("XY", **opt1)
-                | SpkMapPartThanSum(hist)
-            ) * (1 / opt1["fraction"] if "fraction" in opt1 else 1),
+                | SpkMapPartThanSum(hist),
+                (1 / opt1["fraction"] if "fraction" in opt1 else 1),
+            )
         } | AppendCCov("X", "Y")
     return analyzer
 
@@ -233,30 +236,35 @@ def cov3d_complicated(
             ) -> dict:
         return {
             "N": df.count(),
-            "Sum[X]Sum[Y]Sum[Z]": (
+            "Sum[X]Sum[Y]Sum[Z]": markup(
                 combined
                 | SpkCrossJoin("X", "Y", "Z", **opt3)
-                | SpkMapPartThanSum(hist)
-            ) * (1 / opt3["fraction"] if "fraction" in opt3 else 1) ** 3,
-            "Sum[XY]Sum[Z]": (
+                | SpkMapPartThanSum(hist),
+                (1 / opt3["fraction"] if "fraction" in opt3 else 1) ** 3,
+            ),
+            "Sum[XY]Sum[Z]": markup(
                 combined
                 | SpkCrossJoin("XY", "Z", **opt2)
-                | SpkMapPartThanSum(hist)
-            ) * (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
-            "Sum[XZ]Sum[Y]": (
+                | SpkMapPartThanSum(hist),
+                (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
+            ),
+            "Sum[XZ]Sum[Y]": markup(
                 combined
                 | SpkCrossJoin("XZ", "Y", **opt2)
-                | SpkMapPartThanSum(hist)
-            ) * (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
-            "Sum[YZ]Sum[X]": (
+                | SpkMapPartThanSum(hist),
+                (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
+            ),
+            "Sum[YZ]Sum[X]": markup(
                 combined
                 | SpkCrossJoin("YZ", "X", **opt2)
-                | SpkMapPartThanSum(hist)
-            ) * (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
+                | SpkMapPartThanSum(hist),
+                (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
+            ),
             "Sum[XYZ]": (
                 combined
                 | SpkCrossJoin("XYZ", **opt1)
-                | SpkMapPartThanSum(hist)
-            ) * (1 / opt1["fraction"] if "fraction" in opt1 else 1),
+                | SpkMapPartThanSum(hist),
+                (1 / opt1["fraction"] if "fraction" in opt1 else 1),
+            ),
         } | AppendCCov("X", "Y", "Z")
     return analyzer

@@ -6,6 +6,8 @@ import pyspark.sql.functions as f
 from numba import jit
 import numpy as np
 
+from .markup import compute
+
 
 __all__ = [
     "digitize", "increase",
@@ -202,8 +204,8 @@ class AppendCCov:
             i, j = keys
             return {
                 f"Cov[{i},{j}]": (
-                    d[f"Sum[{i}{j}]"] / d["N"]
-                    - d[f"Sum[{i}]Sum[{j}]"] / d["N"] ** 2
+                    compute(d[f"Sum[{i}{j}]"]) / d["N"]
+                    - compute(d[f"Sum[{i}]Sum[{j}]"]) / d["N"] ** 2
                 ),
                 **d,
             }
@@ -212,11 +214,11 @@ class AppendCCov:
             i, j, k = keys
             return {
                 f"Cov[{i},{j},{k}]": (
-                    d[f"Sum[{i}{j}{k}]"] / d["N"]
-                    - d[f"Sum[{i}{j}]Sum[{k}]"] / d["N"] ** 2
-                    - d[f"Sum[{i}{k}]Sum[{j}]"] / d["N"] ** 2
-                    - d[f"Sum[{j}{k}]Sum[{i}]"] / d["N"] ** 2
-                    + 2 * d[f"Sum[{i}]Sum[{j}]Sum[{k}]"] / d["N"] ** 3
+                    compute(d[f"Sum[{i}{j}{k}]"]) / d["N"]
+                    - compute(d[f"Sum[{i}{j}]Sum[{k}]"]) / d["N"] ** 2
+                    - compute(d[f"Sum[{i}{k}]Sum[{j}]"]) / d["N"] ** 2
+                    - compute(d[f"Sum[{j}{k}]Sum[{i}]"]) / d["N"] ** 2
+                    + 2 * compute(d[f"Sum[{i}]Sum[{j}]Sum[{k}]"]) / d["N"] ** 3
                 ),
                 **d,
             }
