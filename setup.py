@@ -11,7 +11,7 @@ except ModuleNotFoundError:
     pybind11 = None
 
 
-VERSION = 'v201905.0'
+VERSION = '201905.1'
 
 
 ext_modules = [
