@@ -11,6 +11,9 @@ except ModuleNotFoundError:
     pybind11 = None
 
 
+VERSION = 'v201905.0'
+
+
 ext_modules = [
     Extension(
         'dltools.sacla.model',
@@ -67,9 +70,13 @@ ext_modules = [
     ]),
 ]
 
+with open('dltools/version.py', 'w') as fp:
+    fp.write('# This file is generated from setup.py.\n'
+             'version = "{}"\n'.format(VERSION))
+
 setup(
     name='dltools',
-    version='v201901.1',
+    version=VERSION,
     author='Daehyun You',
     author_email='daehyun@dc.tohoku.ac.jp',
     url='https://github.com/DaehyunPY/dltools',
