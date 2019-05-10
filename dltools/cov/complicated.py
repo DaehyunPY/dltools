@@ -107,7 +107,7 @@ def cov2d_complicated(
                 | SpkCrossJoin("XY", **opt1)
                 | SpkMapPartThanSum(hist),
                 (1 / opt1["fraction"] if "fraction" in opt1 else 1),
-            )
+            ),
         } | AppendCCov("X", "Y")
     return analyzer
 
@@ -260,7 +260,7 @@ def cov3d_complicated(
                 | SpkMapPartThanSum(hist),
                 (1 / opt2["fraction"] if "fraction" in opt2 else 1) ** 2,
             ),
-            "Sum[XYZ]": (
+            "Sum[XYZ]": markup(
                 combined
                 | SpkCrossJoin("XYZ", **opt1)
                 | SpkMapPartThanSum(hist),
