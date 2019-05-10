@@ -6,7 +6,7 @@ import pyspark.sql.functions as f
 from numba import jit
 import numpy as np
 
-from .markup import compute
+from .markup import compute, compute_err
 
 
 __all__ = [
@@ -165,6 +165,12 @@ class AppendCov:
                                 d[f"Sum[{i}]"],
                                 d[f"Sum[{j}]"]) / d["N"] ** 2
                 ),
+                f"Err[Cov[{i},{j}]]": (
+                    (d[f"Sum[{i}{j}]"] ** 0.5 / d["N"]) ** 2
+                    + (np.einsum("i...,j->i...j",
+                                 d[f"Sum[{i}]"],
+                                 d[f"Sum[{j}]"]) ** 0.5 / d["N"] ** 2) ** 2
+                ) ** 0.5,
                 **d,
             }
 
@@ -183,6 +189,18 @@ class AppendCov:
                                 d[f"Sum[{j}]"],
                                 d[f"Cov[{i},{k}]"]) / d["N"]
                 ),
+                f"Err[Cov[{i},{j},{k}]]": (
+                    (d[f"Sum[{i}{j}{k}]"] ** 0.5 / d["N"]) ** 2
+                    + (np.einsum("i...j,k->i...jk",
+                                 d[f"Sum[{i}{j}]"],
+                                 d[f"Sum[{k}]"]) ** 0.5 / d["N"] ** 2) ** 2
+                    + (np.einsum("i...,jk->i...jk",
+                                 d[f"Sum[{i}]"],
+                                 d[f"Cov[{j},{k}]"]) ** 0.5 / d["N"]) ** 2
+                    + (np.einsum("j...,ik->ij...k",
+                                 d[f"Sum[{j}]"],
+                                 d[f"Cov[{i},{k}]"]) ** 0.5 / d["N"]) ** 2
+                ) ** 0.5,
                 **d,
             }
 
@@ -207,6 +225,10 @@ class AppendCCov:
                     compute(d[f"Sum[{i}{j}]"]) / d["N"]
                     - compute(d[f"Sum[{i}]Sum[{j}]"]) / d["N"] ** 2
                 ),
+                f"Err[Cov[{i},{j}]]": (
+                    (compute_err(d[f"Sum[{i}{j}]"]) / d["N"]) ** 2
+                    + (compute_err(d[f"Sum[{i}]Sum[{j}]"]) / d["N"] ** 2) ** 2
+                ) ** 0.5,
                 **d,
             }
 
@@ -220,6 +242,13 @@ class AppendCCov:
                     - compute(d[f"Sum[{j}{k}]Sum[{i}]"]) / d["N"] ** 2
                     + 2 * compute(d[f"Sum[{i}]Sum[{j}]Sum[{k}]"]) / d["N"] ** 3
                 ),
+                f"Err[Cov[{i},{j},{k}]]": (
+                    (compute_err(d[f"Sum[{i}{j}{k}]"]) / d["N"]) ** 2
+                    + (compute_err(d[f"Sum[{i}{j}]Sum[{k}]"]) / d["N"] ** 2) ** 2
+                    + (compute_err(d[f"Sum[{i}{k}]Sum[{j}]"]) / d["N"] ** 2) ** 2
+                    + (compute_err(d[f"Sum[{j}{k}]Sum[{i}]"]) / d["N"] ** 2) ** 2
+                    + (2 * compute_err(d[f"Sum[{i}]Sum[{j}]Sum[{k}]"]) / d["N"] ** 3) ** 2
+                ) ** 0.5,
                 **d,
             }
 
