@@ -11,7 +11,7 @@ except ModuleNotFoundError:
     pybind11 = None
 
 
-VERSION = '201910.0'
+VERSION = '201910.1'
 
 
 ext_modules = [
@@ -86,8 +86,10 @@ setup(
     ext_modules=ext_modules,
     packages=[
         'dltools',
-        'dltools.sacla',
         'dltools.cov',
+        'dltools.dummy',
+        'dltools.sacla',
+        'dltools.sp8',
     ],
     install_requires=[
         'numba',
